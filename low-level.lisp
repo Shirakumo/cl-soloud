@@ -1,7 +1,7 @@
 #|
- This file is a part of cl-soloud
- (c) 2017 Shirakumo http://tymoon.eu (shinmera@tymoon.eu)
- Author: Nicolas Hafner <shinmera@tymoon.eu>
+This file is a part of cl-soloud
+(c) 2017 Shirakumo http://tymoon.eu (shinmera@tymoon.eu)
+Author: Nicolas Hafner <shinmera@tymoon.eu>
 |#
 
 (in-package #:org.shirakumo.fraf.soloud.cffi)
@@ -25,6 +25,13 @@
 (use-foreign-library libsoloud)
 
 ;;; SoLoud
+(defctype soloud :pointer)
+(defctype audio-collider :pointer)
+(defctype audio-attenuator :pointer)
+(defctype audio-source :pointer)
+(defctype file :pointer)
+(defctype filter :pointer)
+
 (defcenum soloud-backend
   (:auto                  0)
   (:sdl                   1)
@@ -46,33 +53,7 @@
   (:enable-visualization  2)
   (:left-handed-3d        4))
 
-(defctype aligned-float-buffer :pointer)
-(defctype soloud :pointer)
-(defctype audio-collider :pointer)
-(defctype audio-attenuator :pointer)
-(defctype audio-source :pointer)
-(defctype biquad-resonant-filter :pointer)
-(defctype lofi-filter :pointer)
-(defctype bus :pointer)
-(defctype echo-filter :pointer)
-(defctype fader :pointer)
-(defctype fft-filter :pointer)
-(defctype bass-boost-filter :pointer)
-(defctype filter :pointer)
-(defctype speech :pointer)
-(defctype wav :pointer)
-(defctype wav-stream :pointer)
-(defctype prg :pointer)
-(defctype sfxr :pointer)
-(defctype flanger-filter :pointer)
-(defctype dc-removal-filter :pointer)
-(defctype open-mpt :pointer)
-(defctype monotone :pointer)
-(defctype ted-sid :pointer)
-(defctype file :pointer)
-
-(defcfun (create "Soloud_create") soloud
-  )
+(defcfun (create "Soloud_create") soloud)
 
 (defcfun (destroy "Soloud_destroy") :void
   (soloud soloud))
@@ -211,7 +192,7 @@
   (attribute-id :uint)
   (value :float))
 
-(defcfun (get-filter-parameter "Soloud_getFilterParameter") :gloat
+(defcfun (get-filter-parameter "Soloud_getFilterParameter") :float
   (soloud soloud)
   (voice-handle :uint)
   (filter-id :uint)
@@ -327,7 +308,7 @@
 (defcfun (set-protect-voice "Soloud_setProtectVoice") :void
   (soloud soloud)
   (voice-handle :uint)
-  (int :protect))
+  (protect :int))
 
 (defcfun (set-sample-rate "Soloud_setSamplerate") :void
   (soloud soloud)
@@ -358,7 +339,7 @@
 (defcfun (set-volume "Soloud_setVolume") :void
   (soloud soloud)
   (voice-handle :uint)
-  (float :volume))
+  (volume :float))
 
 (defcfun (set-delay-samples "Soloud_setDelaySamples") :void
   (soloud soloud)
@@ -403,28 +384,28 @@
   (soloud soloud)
   (voice-handle :uint)
   (from :float)
-  (to :fload)
+  (to :float)
   (time :double))
 
 (defcfun (oscillate-pan "Soloud_oscillatePan") :void
   (soloud soloud)
   (voice-handle :uint)
   (from :float)
-  (to :fload)
+  (to :float)
   (time :double))
 
 (defcfun (oscillate-relative-play-speed "Soloud_oscillateRelativePlaySpeed") :void
   (soloud soloud)
   (voice-handle :uint)
   (from :float)
-  (to :fload)
+  (to :float)
   (time :double))
 
 (defcfun (oscillate-global-volume "Soloud_oscillateGlobalVolume") :void
   (soloud soloud)
   (voice-handle :uint)
   (from :float)
-  (to :fload)
+  (to :float)
   (time :double))
 
 (defcfun (set-global-filter "Soloud_setGlobalFilter") :void
@@ -614,6 +595,8 @@
   (:frequency             2)
   (:resonance             3))
 
+(defctype biquad-resonant-filter :pointer)
+
 (defcfun (destroy-biquad-resonant-filter "BiquadResonantFilter_destroy") :void
   (biquad-resonant-filter biquad-resonant-filter))
 
@@ -632,6 +615,8 @@
   (:samplerate            1)
   (:bitdepth              2))
 
+(defctype lofi-filter :pointer)
+
 (defcfun (destroy-lofi-filter "LofiFilter_destroy") :void
   (lofi-filter lofi-filter))
 
@@ -643,6 +628,8 @@
   (bit-depth :float))
 
 ;;; Bus
+(defctype bus :pointer)
+
 (defcfun (destroy-bus "Bus_destroy") :void
   (bus bus))
 
@@ -731,7 +718,7 @@
 
 (defcfun (set-bus-volume "Bus_setVolume") :void
   (bus bus)
-  (float :volume))
+  (volume :float))
 
 (defcfun (set-bus-looping "Bus_setLooping") :void
   (bus bus)
@@ -785,6 +772,8 @@
   (bus bus))
 
 ;;; Echo Filter
+(defctype echo-filter :pointer)
+
 (defcfun (destroy-echo-filter "EchoFilter_destroy") :void
   (echo-filter echo-filter))
 
@@ -801,12 +790,16 @@
   (filter :float))
 
 ;;; FFT Filter
+(defctype fft-filter :pointer)
+
 (defcfun (destroy-fft-filter "FFTFilter_destroy") :void
   (fft-filter fft-filter))
 
 (defcfun (create-fft-filter "FFTFilter_create") fft-filter)
 
 ;;; Bass Boost Filter
+(defctype bass-boost-filter :pointer)
+
 (defcenum bass-boost-filter-flag
   (:wet                   0)
   (:boost                 1))
@@ -821,6 +814,8 @@
   (boost :float))
 
 ;;; Speech
+(defctype speech :pointer)
+
 (defcfun (destroy-speech "Speech_destroy") :void
   (speech speech))
 
@@ -832,7 +827,7 @@
 
 (defcfun (set-speech-volume "Speech_setVolume") :void
   (speech speech)
-  (float :volume))
+  (volume :float))
 
 (defcfun (set-speech-looping "Speech_setLooping") :void
   (speech speech)
@@ -891,6 +886,8 @@
   (speech speech))
 
 ;;; Wav
+(defctype wav :pointer)
+
 (defcfun (destroy-wav "Wav_destroy") :void
   (wav wav))
 
@@ -921,7 +918,7 @@
 
 (defcfun (set-wav-volume "Wav_setVolume") :void
   (wav wav)
-  (float :volume))
+  (volume :float))
 
 (defcfun (set-wav-looping "Wav_setLooping") :void
   (wav wav)
@@ -980,6 +977,8 @@
   (wav wav))
 
 ;;; Wav Stream
+(defctype wav-stream :pointer)
+
 (defcfun (destroy-wav-stream "WavStream_destroy") :void
   (wav-stream wav-stream))
 
@@ -1018,7 +1017,7 @@
 
 (defcfun (set-wav-stream-volume "WavStream_setVolume") :void
   (wav-stream wav-stream)
-  (float :volume))
+  (volume :float))
 
 (defcfun (set-wav-stream-looping "WavStream_setLooping") :void
   (wav-stream wav-stream)
@@ -1077,6 +1076,8 @@
   (wav-stream wav-stream))
 
 ;;; Prg
+(defctype prg :pointer)
+
 (defcfun (destroy-prg "Prg_destroy") :void
   (prg prg))
 
@@ -1090,6 +1091,8 @@
   (seed :int))
 
 ;;; Sfxr
+(defctype sfxr :pointer)
+
 (defcenum sfxr-preset
   (:coin                  0)
   (:laser                 1)
@@ -1131,7 +1134,7 @@
 
 (defcfun (set-sfxr-volume "Sfxr_setVolume") :void
   (sfxr sfxr)
-  (float :volume))
+  (volume :float))
 
 (defcfun (set-sfxr-looping "Sfxr_setLooping") :void
   (sfxr sfxr)
@@ -1190,6 +1193,8 @@
   (sfxr sfxr))
 
 ;;; Flanger Filter
+(defctype flanger-filter :pointer)
+
 (defcenum flanger-filter-flag
   (:wet                   0)
   (:delay                 1)
@@ -1206,6 +1211,8 @@
   (freq :float))
 
 ;;; DC Removal Filter
+(defctype dc-removal-filter :pointer)
+
 (defcfun (destroy-dc-removal-filter "DCRemovalFilter_destroy") :void
   (dc-removal-filter dc-removal-filter))
 
@@ -1219,6 +1226,8 @@
   (length :float))
 
 ;;; OpenMPT
+(defctype openmpt :pointer)
+
 (defcfun (destroy-openmpt "Openmpt_destroy") :void
   (openmpt openmpt))
 
@@ -1246,7 +1255,7 @@
 
 (defcfun (set-openmpt-volume "Openmpt_setVolume") :void
   (openmpt openmpt)
-  (float :volume))
+  (volume :float))
 
 (defcfun (set-openmpt-looping "Openmpt_setLooping") :void
   (openmpt openmpt)
@@ -1305,6 +1314,8 @@
   (openmpt openmpt))
 
 ;;; Monotone
+(defctype monotone :pointer)
+
 (defcenum monotone-waveform
   (:square                0)
   (:saw                   1)
@@ -1347,7 +1358,7 @@
 
 (defcfun (set-monotone-volume "Monotone_setVolume") :void
   (monotone monotone)
-  (float :volume))
+  (volume :float))
 
 (defcfun (set-monotone-looping "Monotone_setLooping") :void
   (monotone monotone)
@@ -1406,6 +1417,8 @@
   (monotone monotone))
 
 ;;; TedSid
+(defctype ted-sid :pointer)
+
 (defcfun (destroy-ted-sid "TedSid_destroy") :void
   (ted-sid ted-sid))
 
@@ -1444,7 +1457,7 @@
 
 (defcfun (set-ted-sid-volume "TedSid_setVolume") :void
   (ted-sid ted-sid)
-  (float :volume))
+  (volume :float))
 
 (defcfun (set-ted-sid-looping "TedSid_setLooping") :void
   (ted-sid ted-sid)
