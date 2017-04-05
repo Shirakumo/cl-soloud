@@ -24,6 +24,7 @@
 
 (use-foreign-library libsoloud)
 
+;;; SoLoud
 (defcenum soloud-backend
   (:auto                  0)
   (:sdl                   1)
@@ -44,47 +45,6 @@
   (:clip-roundoff         1)
   (:enable-visualization  2)
   (:left-handed-3d        4))
-
-(defcenum biquad-resonant-filter-pass
-  (:none                  0)
-  (:lowpass               1)
-  (:highpass              2)
-  (:bandpass              3))
-
-(defcenum biquad-resonant-filter-flag
-  (:wet                   0)
-  (:samplerate            1)
-  (:frequency             2)
-  (:resonance             3))
-
-(defcenum lofi-filter-flag
-  (:wet                   0)
-  (:samplerate            1)
-  (:bitdepth              2))
-
-(defcenum bass-boost-filter-flag
-  (:wet                   0)
-  (:boost                 1))
-
-(defcenum sfxr-effect
-  (:coin                  0)
-  (:laser                 1)
-  (:explosion             2)
-  (:powerup               3)
-  (:hurt                  4)
-  (:jump                  5)
-  (:blip                  6))
-
-(defcenum flanger-filter-flag
-  (:wet                   0)
-  (:delay                 1)
-  (:freq                  2))
-
-(defcenum monotone-wave
-  (:square                0)
-  (:saw                   1)
-  (:sin                   2)
-  (:sawsin                3))
 
 (defctype aligned-float-buffer :pointer)
 (defctype soloud :pointer)
@@ -472,17 +432,17 @@
   (filter-id :uint)
   (filter filter))
 
-(defcfun (init "Soloud_setVisualizationEnable") :void
+(defcfun (set-visualization "Soloud_setVisualizationEnable") :void
   (soloud soloud)
   (enable :int))
 
-(defcfun (init "Soloud_calcFFT") :pointer
+(defcfun (calc-fft "Soloud_calcFFT") :pointer
   (soloud soloud))
 
-(defcfun (init "Soloud_getWave") :pointer
+(defcfun (get-wave "Soloud_getWave") :pointer
   (soloud soloud))
 
-(defcfun (init "Soloud_getLoopCount") :uint
+(defcfun (get-loop-count "Soloud_getLoopCount") :uint
   (soloud soloud)
   (voice-handle :uint))
 
@@ -629,3 +589,863 @@
   (soloud soloud)
   (buffer :pointer)
   (samples :uint))
+
+;;; Audio Attenuator
+(defcfun (destroy-audio-attenuator "AudioAttenuator_destroy") :void
+  (audio-attenuator audio-attenuator))
+
+(defcfun (attenuate-audio-attenuator "AudioAttenuator_attenuate") :void
+  (audio-attenuator audio-attenuator)
+  (distance :float)
+  (min :float)
+  (max :float)
+  (rolloff :float))
+
+;;; Biquad Resonant Filter
+(defcenum biquad-resonant-filter-pass
+  (:none                  0)
+  (:lowpass               1)
+  (:highpass              2)
+  (:bandpass              3))
+
+(defcenum biquad-resonant-filter-flag
+  (:wet                   0)
+  (:samplerate            1)
+  (:frequency             2)
+  (:resonance             3))
+
+(defcfun (destroy-biquad-resonant-filter "BiquadResonantFilter_destroy") :void
+  (biquad-resonant-filter biquad-resonant-filter))
+
+(defcfun (create-biquad-resonant-filter "BiquadResonantFilter_create") biquad-resonant-filter)
+
+(defcfun (set-biquad-resonant-filter-params "BiquadResonantFilter_setParam") :int
+  (biquad-resonant-filter biquad-resonant-filter)
+  (type :int)
+  (sample-rate :float)
+  (frequency :float)
+  (resonance :float))
+
+;;; Lofi Filter
+(defcenum lofi-filter-flag
+  (:wet                   0)
+  (:samplerate            1)
+  (:bitdepth              2))
+
+(defcfun (destroy-lofi-filter "LofiFilter_destroy") :void
+  (lofi-filter lofi-filter))
+
+(defcfun (create-lofi-filter "LofiFilter_create") lofi-filter)
+
+(defcfun (set-lofi-filter-params "LofiFilter_setParams") :int
+  (lofi-filter lofi-filter)
+  (sample-rate :float)
+  (bit-depth :float))
+
+;;; Bus
+(defcfun (destroy-bus "Bus_destroy") :void
+  (bus bus))
+
+(defcfun (create-bus "Bus_create") bus)
+
+(defcfun (set-bus-filter "Bus_setFilter") :void
+  (bus bus)
+  (filter-id :uint)
+  (filter filter))
+
+(defcfun (bus-play "Bus_play") :uint
+  (bus bus)
+  (sound audio-source))
+
+(defcfun (bus-play* "Bus_playEx") :uint
+  (bus bus)
+  (sound audio-source)
+  (volume :float)
+  (pan :float)
+  (paused :int))
+
+(defcfun (bus-play-clocked "Bus_playClocked") :uint
+  (bus bus)
+  (sound-time :double)
+  (sound audio-source))
+
+(defcfun (bus-play-clocked* "Bus_playClockedEx") :uint
+  (bus bus)
+  (sound-time :double)
+  (sound audio-source)
+  (volume :float)
+  (pan :float))
+
+(defcfun (bus-play-3d "Bus_play3d") :uint
+  (bus bus)
+  (sound audio-source)
+  (x :float)
+  (y :float)
+  (z :float))
+
+(defcfun (bus-play-3d* "Bus_play3dEx") :uint
+  (bus bus)
+  (sound audio-source)
+  (x :float)
+  (y :float)
+  (z :float)
+  (vx :float)
+  (vy :float)
+  (vz :float)
+  (volume :float)
+  (paused :int))
+
+(defcfun (bus-play-3d-clocked "Bus_play3dClocked") :uint
+  (bus bus)
+  (sound-time :double)
+  (sound audio-source)
+  (x :float)
+  (y :float)
+  (z :float))
+
+(defcfun (bus-play-3d-clocked* "Bus_play3dClockedEx") :uint
+  (bus bus)
+  (sound-time :double)
+  (sound audio-source)
+  (x :float)
+  (y :float)
+  (z :float)
+  (vx :float)
+  (vy :float)
+  (vz :float)
+  (volume :float))
+
+(defcfun (set-bus-channels "Bus_setChannels") :int
+  (bus bus)
+  (channels :uint))
+
+(defcfun (set-bus-visualization "Bus_setVisualizationEnable") :void
+  (bus bus)
+  (enable :int))
+
+(defcfun (bus-calc-fft "Bus_calcFFT") :pointer
+  (bus bus))
+
+(defcfun (get-bus-wave "Bus_getWave") :pointer
+  (bus bus))
+
+(defcfun (set-bus-volume "Bus_setVolume") :void
+  (bus bus)
+  (float :volume))
+
+(defcfun (set-bus-looping "Bus_setLooping") :void
+  (bus bus)
+  (looping :int))
+
+(defcfun (set-bus-3d-min-max-distance "Bus_set3dMinMaxDistance") :void
+  (bus bus)
+  (min :float)
+  (max :float))
+
+(defcfun (set-bus-3d-attenuation "Bus_set3dAttenuation") :void
+  (bus bus)
+  (attenuation-model :uint)
+  (attenuation-rolloff-factor :float))
+
+(defcfun (set-bus-3d-doppler-factor "Bus_set3dDopplerFactor") :void
+  (bus bus)
+  (doppler-factor :float))
+
+(defcfun (set-bus-3d-processing "Bus_set3dProcessing") :void
+  (bus bus)
+  (do-3d-processing :int))
+
+(defcfun (set-bus-3d-listener-relative "Bus_set3dListenerRelative") :void
+  (bus bus)
+  (listener-relative :int))
+
+(defcfun (set-bus-3d-distance-delay "Bus_set3dDistanceDelay") :void
+  (bus bus)
+  (distance-delay :int))
+
+(defcfun (set-bus-3d-collider "Bus_set3dCollider") :void
+  (bus bus)
+  (audio-collider audio-collider))
+
+(defcfun (set-bus-3d-collider* "Bus_set3dColliderEx") :void
+  (bus bus)
+  (audio-collider audio-collider)
+  (user-data :int))
+
+(defcfun (set-bus-3d-attenuator "Bus_set3dAttenuator") :void
+  (bus bus)
+  (audio-attenuator audio-attenuator))
+
+(defcfun (set-bus-3d-inaudible-behavior "Bus_setInaudibleBehavior") :void
+  (bus bus)
+  (must-tick :int)
+  (kill :int))
+
+(defcfun (stop-bus "Bus_stop") :void
+  (bus bus))
+
+;;; Echo Filter
+;; FIXME
+
+;;; FFT Filter
+;; FIXME
+
+;;; Bass Boost Filter
+(defcenum bass-boost-filter-flag
+  (:wet                   0)
+  (:boost                 1))
+
+;; FIXME
+
+;;; Speech
+(defcfun (destroy-speech "Speech_destroy") :void
+  (speech speech))
+
+(defcfun (create-speech "Speech_create") speech)
+
+(defcfun (set-speech-text "Speech_setText") :int
+  (speech speech)
+  (text :string))
+
+(defcfun (set-speech-volume "Speech_setVolume") :void
+  (speech speech)
+  (float :volume))
+
+(defcfun (set-speech-looping "Speech_setLooping") :void
+  (speech speech)
+  (looping :int))
+
+(defcfun (set-speech-3d-min-max-distance "Speech_set3dMinMaxDistance") :void
+  (speech speech)
+  (min :float)
+  (max :float))
+
+(defcfun (set-speech-3d-attenuation "Speech_set3dAttenuation") :void
+  (speech speech)
+  (attenuation-model :uint)
+  (attenuation-rolloff-factor :float))
+
+(defcfun (set-speech-3d-doppler-factor "Speech_set3dDopplerFactor") :void
+  (speech speech)
+  (doppler-factor :float))
+
+(defcfun (set-speech-3d-processing "Speech_set3dProcessing") :void
+  (speech speech)
+  (do-3d-processing :int))
+
+(defcfun (set-speech-3d-listener-relative "Speech_set3dListenerRelative") :void
+  (speech speech)
+  (listener-relative :int))
+
+(defcfun (set-speech-3d-distance-delay "Speech_set3dDistanceDelay") :void
+  (speech speech)
+  (distance-delay :int))
+
+(defcfun (set-speech-3d-collider "Speech_set3dCollider") :void
+  (speech speech)
+  (audio-collider audio-collider))
+
+(defcfun (set-speech-3d-collider* "Speech_set3dColliderEx") :void
+  (speech speech)
+  (audio-collider audio-collider)
+  (user-data :int))
+
+(defcfun (set-speech-3d-attenuator "Speech_set3dAttenuator") :void
+  (speech speech)
+  (audio-attenuator audio-attenuator))
+
+(defcfun (set-speech-3d-inaudible-behavior "Speech_setInaudibleBehavior") :void
+  (speech speech)
+  (must-tick :int)
+  (kill :int))
+
+(defcfun (set-speech-filter "Speech_setFilter") :void
+  (speech speech)
+  (filter-id :uint)
+  (filter filter))
+
+(defcfun (stop-speech "Speech_stop") :void
+  (speech speech))
+
+;;; Wav
+(defcfun (destroy-wav "Wav_destroy") :void
+  (wav wav))
+
+(defcfun (create-wav "Wav_create") wav)
+
+(defcfun (wav-load "Wav_load") :int
+  (wav wav)
+  (filename :string))
+
+(defcfun (wav-load-mem "Wav_loadMem") :int
+  (wav wav)
+  (mem :pointer)
+  (length :uint))
+
+(defcfun (wav-load-mem* "Wav_loadMemEx") :int
+  (wav wav)
+  (mem :pointer)
+  (length :uint)
+  (copy :int)
+  (take-ownership :int))
+
+(defcfun (wav-load-file "Wav_loadFile") :int
+  (wav wav)
+  (file file))
+
+(defcfun (get-wav-length "Wav_getLength") :double
+  (wav wav))
+
+(defcfun (set-wav-volume "Wav_setVolume") :void
+  (wav wav)
+  (float :volume))
+
+(defcfun (set-wav-looping "Wav_setLooping") :void
+  (wav wav)
+  (looping :int))
+
+(defcfun (set-wav-3d-min-max-distance "Wav_set3dMinMaxDistance") :void
+  (wav wav)
+  (min :float)
+  (max :float))
+
+(defcfun (set-wav-3d-attenuation "Wav_set3dAttenuation") :void
+  (wav wav)
+  (attenuation-model :uint)
+  (attenuation-rolloff-factor :float))
+
+(defcfun (set-wav-3d-doppler-factor "Wav_set3dDopplerFactor") :void
+  (wav wav)
+  (doppler-factor :float))
+
+(defcfun (set-wav-3d-processing "Wav_set3dProcessing") :void
+  (wav wav)
+  (do-3d-processing :int))
+
+(defcfun (set-wav-3d-listener-relative "Wav_set3dListenerRelative") :void
+  (wav wav)
+  (listener-relative :int))
+
+(defcfun (set-wav-3d-distance-delay "Wav_set3dDistanceDelay") :void
+  (wav wav)
+  (distance-delay :int))
+
+(defcfun (set-wav-3d-collider "Wav_set3dCollider") :void
+  (wav wav)
+  (audio-collider audio-collider))
+
+(defcfun (set-wav-3d-collider* "Wav_set3dColliderEx") :void
+  (wav wav)
+  (audio-collider audio-collider)
+  (user-data :int))
+
+(defcfun (set-wav-3d-attenuator "Wav_set3dAttenuator") :void
+  (wav wav)
+  (audio-attenuator audio-attenuator))
+
+(defcfun (set-wav-3d-inaudible-behavior "Wav_setInaudibleBehavior") :void
+  (wav wav)
+  (must-tick :int)
+  (kill :int))
+
+(defcfun (set-wav-filter "Wav_setFilter") :void
+  (wav wav)
+  (filter-id :uint)
+  (filter filter))
+
+(defcfun (stop-wav "Wav_stop") :void
+  (wav wav))
+
+;;; Wav Stream
+(defcfun (destroy-wav-stream "WavStream_destroy") :void
+  (wav-stream wav-stream))
+
+(defcfun (create-wav-stream "WavStream_create") wav-stream)
+
+(defcfun (wav-stream-load "WavStream_load") :int
+  (wav-stream wav-stream)
+  (filename :string))
+
+(defcfun (wav-stream-load-mem "WavStream_loadMem") :int
+  (wav-stream wav-stream)
+  (mem :pointer)
+  (length :uint))
+
+(defcfun (wav-stream-load-mem* "WavStream_loadMemEx") :int
+  (wav-stream wav-stream)
+  (mem :pointer)
+  (length :uint)
+  (copy :int)
+  (take-ownership :int))
+
+(defcfun (wav-stream-load-to-mem "WavStream_loadToMem") :int
+  (wav-stream wav-stream)
+  (filename :string))
+
+(defcfun (wav-stream-load-file "WavStream_loadFile") :int
+  (wav-stream wav-stream)
+  (file file))
+
+(defcfun (wav-stream-file-load-to-mem "WavStream_loadFileToMem") :int
+  (wav-stream wav-stream)
+  (file file))
+
+(defcfun (get-wav-stream-length "WavStream_getLength") :double
+  (wav wav))
+
+(defcfun (set-wav-stream-volume "WavStream_setVolume") :void
+  (wav-stream wav-stream)
+  (float :volume))
+
+(defcfun (set-wav-stream-looping "WavStream_setLooping") :void
+  (wav-stream wav-stream)
+  (looping :int))
+
+(defcfun (set-wav-stream-3d-min-max-distance "WavStream_set3dMinMaxDistance") :void
+  (wav-stream wav-stream)
+  (min :float)
+  (max :float))
+
+(defcfun (set-wav-stream-3d-attenuation "WavStream_set3dAttenuation") :void
+  (wav-stream wav-stream)
+  (attenuation-model :uint)
+  (attenuation-rolloff-factor :float))
+
+(defcfun (set-wav-stream-3d-doppler-factor "WavStream_set3dDopplerFactor") :void
+  (wav-stream wav-stream)
+  (doppler-factor :float))
+
+(defcfun (set-wav-stream-3d-processing "WavStream_set3dProcessing") :void
+  (wav-stream wav-stream)
+  (do-3d-processing :int))
+
+(defcfun (set-wav-stream-3d-listener-relative "WavStream_set3dListenerRelative") :void
+  (wav-stream wav-stream)
+  (listener-relative :int))
+
+(defcfun (set-wav-stream-3d-distance-delay "WavStream_set3dDistanceDelay") :void
+  (wav-stream wav-stream)
+  (distance-delay :int))
+
+(defcfun (set-wav-stream-3d-collider "WavStream_set3dCollider") :void
+  (wav-stream wav-stream)
+  (audio-collider audio-collider))
+
+(defcfun (set-wav-stream-3d-collider* "WavStream_set3dColliderEx") :void
+  (wav-stream wav-stream)
+  (audio-collider audio-collider)
+  (user-data :int))
+
+(defcfun (set-wav-stream-3d-attenuator "WavStream_set3dAttenuator") :void
+  (wav-stream wav-stream)
+  (audio-attenuator audio-attenuator))
+
+(defcfun (set-wav-stream-3d-inaudible-behavior "WavStream_setInaudibleBehavior") :void
+  (wav-stream wav-stream)
+  (must-tick :int)
+  (kill :int))
+
+(defcfun (set-wav-stream-filter "WavStream_setFilter") :void
+  (wav-stream wav-stream)
+  (filter-id :uint)
+  (filter filter))
+
+(defcfun (stop-wav-stream "WavStream_stop") :void
+  (wav-stream wav-stream))
+
+;;; Prg
+;; FIXME
+
+;;; Sfxr
+(defcenum sfxr-preset
+  (:coin                  0)
+  (:laser                 1)
+  (:explosion             2)
+  (:powerup               3)
+  (:hurt                  4)
+  (:jump                  5)
+  (:blip                  6))
+
+(defcfun (destroy-sfxr "Sfxr_destroy") :void
+  (sfxr sfxr))
+
+(defcfun (create-sfxr "Sfxr_create") sfxr)
+
+(defcfun (load-sfxr-params "Sfxr_loadParams") :int
+  (sfxr sfxr)
+  (filename :string))
+
+(defcfun (load-sfxr-params-mem "Sfxr_loadParamsMem") :int
+  (sfxr sfxr)
+  (mem :pointer)
+  (length :uint))
+
+(defcfun (load-sfxr-params-mem* "Sfxr_loadParamsMemEx") :int
+  (sfxr sfxr)
+  (mem :pointer)
+  (length :uint)
+  (copy :int)
+  (take-ownership :int))
+
+(defcfun (load-sfxr-params-file "Sfxr_loadParamsFile") :int
+  (sfxr sfxr)
+  (file file))
+
+(defcfun (load-sfxr-preset "Sfxr_loadPreset") :int
+  (sfxr sfxr)
+  (preset-no sfxr-preset)
+  (max-distance :float))
+
+(defcfun (set-sfxr-volume "Sfxr_setVolume") :void
+  (sfxr sfxr)
+  (float :volume))
+
+(defcfun (set-sfxr-looping "Sfxr_setLooping") :void
+  (sfxr sfxr)
+  (looping :int))
+
+(defcfun (set-sfxr-3d-min-max-distance "Sfxr_set3dMinMaxDistance") :void
+  (sfxr sfxr)
+  (min :float)
+  (max :float))
+
+(defcfun (set-sfxr-3d-attenuation "Sfxr_set3dAttenuation") :void
+  (sfxr sfxr)
+  (attenuation-model :uint)
+  (attenuation-rolloff-factor :float))
+
+(defcfun (set-sfxr-3d-doppler-factor "Sfxr_set3dDopplerFactor") :void
+  (sfxr sfxr)
+  (doppler-factor :float))
+
+(defcfun (set-sfxr-3d-processing "Sfxr_set3dProcessing") :void
+  (sfxr sfxr)
+  (do-3d-processing :int))
+
+(defcfun (set-sfxr-3d-listener-relative "Sfxr_set3dListenerRelative") :void
+  (sfxr sfxr)
+  (listener-relative :int))
+
+(defcfun (set-sfxr-3d-distance-delay "Sfxr_set3dDistanceDelay") :void
+  (sfxr sfxr)
+  (distance-delay :int))
+
+(defcfun (set-sfxr-3d-collider "Sfxr_set3dCollider") :void
+  (sfxr sfxr)
+  (audio-collider audio-collider))
+
+(defcfun (set-sfxr-3d-collider* "Sfxr_set3dColliderEx") :void
+  (sfxr sfxr)
+  (audio-collider audio-collider)
+  (user-data :int))
+
+(defcfun (set-sfxr-3d-attenuator "Sfxr_set3dAttenuator") :void
+  (sfxr sfxr)
+  (audio-attenuator audio-attenuator))
+
+(defcfun (set-sfxr-3d-inaudible-behavior "Sfxr_setInaudibleBehavior") :void
+  (sfxr sfxr)
+  (must-tick :int)
+  (kill :int))
+
+(defcfun (set-sfxr-filter "Sfxr_setFilter") :void
+  (sfxr sfxr)
+  (filter-id :uint)
+  (filter filter))
+
+(defcfun (stop-sfxr "Sfxr_stop") :void
+  (sfxr sfxr))
+
+;;; Flanger Filter
+(defcenum flanger-filter-flag
+  (:wet                   0)
+  (:delay                 1)
+  (:freq                  2))
+;; FIXME
+
+;;; DC Removal Filter
+;; FIXME
+
+;;; OpenMPT
+(defcfun (destroy-openmpt "Openmpt_destroy") :void
+  (openmpt openmpt))
+
+(defcfun (create-openmpt "Openmpt_create") openmpt)
+
+(defcfun (openmpt-load "Openmpt_load") :int
+  (openmpt openmpt)
+  (filename :string))
+
+(defcfun (openmpt-load-mem "Openmpt_loadMem") :int
+  (openmpt openmpt)
+  (mem :pointer)
+  (length :uint))
+
+(defcfun (openmpt-load-mem* "Openmpt_loadMemEx") :int
+  (openmpt openmpt)
+  (mem :pointer)
+  (length :uint)
+  (copy :int)
+  (take-ownership :int))
+
+(defcfun (openmpt-load-file "Openmpt_loadFile") :int
+  (openmpt openmpt)
+  (file file))
+
+(defcfun (set-openmpt-volume "Openmpt_setVolume") :void
+  (openmpt openmpt)
+  (float :volume))
+
+(defcfun (set-openmpt-looping "Openmpt_setLooping") :void
+  (openmpt openmpt)
+  (looping :int))
+
+(defcfun (set-openmpt-3d-min-max-distance "Openmpt_set3dMinMaxDistance") :void
+  (openmpt openmpt)
+  (min :float)
+  (max :float))
+
+(defcfun (set-openmpt-3d-attenuation "Openmpt_set3dAttenuation") :void
+  (openmpt openmpt)
+  (attenuation-model :uint)
+  (attenuation-rolloff-factor :float))
+
+(defcfun (set-openmpt-3d-doppler-factor "Openmpt_set3dDopplerFactor") :void
+  (openmpt openmpt)
+  (doppler-factor :float))
+
+(defcfun (set-openmpt-3d-processing "Openmpt_set3dProcessing") :void
+  (openmpt openmpt)
+  (do-3d-processing :int))
+
+(defcfun (set-openmpt-3d-listener-relative "Openmpt_set3dListenerRelative") :void
+  (openmpt openmpt)
+  (listener-relative :int))
+
+(defcfun (set-openmpt-3d-distance-delay "Openmpt_set3dDistanceDelay") :void
+  (openmpt openmpt)
+  (distance-delay :int))
+
+(defcfun (set-openmpt-3d-collider "Openmpt_set3dCollider") :void
+  (openmpt openmpt)
+  (audio-collider audio-collider))
+
+(defcfun (set-openmpt-3d-collider* "Openmpt_set3dColliderEx") :void
+  (openmpt openmpt)
+  (audio-collider audio-collider)
+  (user-data :int))
+
+(defcfun (set-openmpt-3d-attenuator "Openmpt_set3dAttenuator") :void
+  (openmpt openmpt)
+  (audio-attenuator audio-attenuator))
+
+(defcfun (set-openmpt-3d-inaudible-behavior "Openmpt_set3dInaudibleBehavior") :void
+  (openmpt openmpt)
+  (must-tick :int)
+  (kill :int))
+
+(defcfun (set-openmpt-filter "Openmpt_setFilter") :void
+  (openmpt openmpt)
+  (filter-id :uint)
+  (filter filter))
+
+(defcfun (stop-openmpt "Openmpt_stop") :void
+  (openmpt openmpt))
+
+;;; Monotone
+(defcenum monotone-waveform
+  (:square                0)
+  (:saw                   1)
+  (:sin                   2)
+  (:sawsin                3))
+
+(defcfun (destroy-monotone "Monotone_destroy") :void
+  (monotone monotone))
+
+(defcfun (create-monotone "Monotone_create") monotone)
+
+(defcfun (set-monotone-params "Monotone_setParams") :int
+  (monotone monotone)
+  (hardware-channels :int))
+
+(defcfun (set-monotone-params* "Monotone_setParamsEx") :int
+  (monotone monotone)
+  (hardware-channels :int)
+  (wave-form monotone-waveform))
+
+(defcfun (monotone-load "Monotone_load") :int
+  (monotone monotone)
+  (filename :string))
+
+(defcfun (monotone-load-mem "Monotone_loadMem") :int
+  (monotone monotone)
+  (mem :pointer)
+  (length :uint))
+
+(defcfun (monotone-load-mem* "Monotone_loadMemEx") :int
+  (monotone monotone)
+  (mem :pointer)
+  (length :uint)
+  (copy :int)
+  (take-ownership :int))
+
+(defcfun (monotone-load-file "Monotone_loadFile") :int
+  (monotone monotone)
+  (file file))
+
+(defcfun (set-monotone-volume "Monotone_setVolume") :void
+  (monotone monotone)
+  (float :volume))
+
+(defcfun (set-monotone-looping "Monotone_setLooping") :void
+  (monotone monotone)
+  (looping :int))
+
+(defcfun (set-monotone-3d-min-max-distance "Monotone_set3dMinMaxDistance") :void
+  (monotone monotone)
+  (min :float)
+  (max :float))
+
+(defcfun (set-monotone-3d-attenuation "Monotone_set3dAttenuation") :void
+  (monotone monotone)
+  (attenuation-model :uint)
+  (attenuation-rolloff-factor :float))
+
+(defcfun (set-monotone-3d-doppler-factor "Monotone_set3dDopplerFactor") :void
+  (monotone monotone)
+  (doppler-factor :float))
+
+(defcfun (set-monotone-3d-processing "Monotone_set3dProcessing") :void
+  (monotone monotone)
+  (do-3d-processing :int))
+
+(defcfun (set-monotone-3d-listener-relative "Monotone_set3dListenerRelative") :void
+  (monotone monotone)
+  (listener-relative :int))
+
+(defcfun (set-monotone-3d-distance-delay "Monotone_set3dDistanceDelay") :void
+  (monotone monotone)
+  (distance-delay :int))
+
+(defcfun (set-monotone-3d-collider "Monotone_set3dCollider") :void
+  (monotone monotone)
+  (audio-collider audio-collider))
+
+(defcfun (set-monotone-3d-collider* "Monotone_set3dColliderEx") :void
+  (monotone monotone)
+  (audio-collider audio-collider)
+  (user-data :int))
+
+(defcfun (set-monotone-3d-attenuator "Monotone_set3dAttenuator") :void
+  (monotone monotone)
+  (audio-attenuator audio-attenuator))
+
+(defcfun (set-monotone-3d-inaudible-behavior "Monotone_set3dInaudibleBehavior") :void
+  (monotone monotone)
+  (must-tick :int)
+  (kill :int))
+
+(defcfun (set-monotone-filter "Monotone_setFilter") :void
+  (monotone monotone)
+  (filter-id :uint)
+  (filter filter))
+
+(defcfun (stop-monotone "Monotone_stop") :void
+  (monotone monotone))
+
+;;; TedSid
+(defcfun (destroy-ted-sid "TedSid_destroy") :void
+  (ted-sid ted-sid))
+
+(defcfun (create-ted-sid "TedSid_create") ted-sid)
+
+(defcfun (ted-sid-load "TedSid_load") :int
+  (ted-sid ted-sid)
+  (filename :string))
+
+(defcfun (ted-sid-load-to-mem "TedSid_loadToMem") :int
+  (ted-sid ted-sid)
+  (filename :string))
+
+(defcfun (ted-sid-load-mem "TedSid_loadMem") :int
+  (ted-sid ted-sid)
+  (mem :pointer)
+  (length :uint))
+
+(defcfun (ted-sid-load-mem* "TedSid_loadMemEx") :int
+  (ted-sid ted-sid)
+  (mem :pointer)
+  (length :uint)
+  (copy :int)
+  (take-ownership :int))
+
+(defcfun (ted-sid-load-file "TedSid_loadFile") :int
+  (ted-sid ted-sid)
+  (file file))
+
+(defcfun (ted-sid-load-file-to-mem "TedSid_loadFileToMem") :int
+  (ted-sid ted-sid)
+  (file file))
+
+(defcfun (get-ted-sid-length "TedSid_getLength") :double
+  (ted-sid ted-sid))
+
+(defcfun (set-ted-sid-volume "TedSid_setVolume") :void
+  (ted-sid ted-sid)
+  (float :volume))
+
+(defcfun (set-ted-sid-looping "TedSid_setLooping") :void
+  (ted-sid ted-sid)
+  (looping :int))
+
+(defcfun (set-ted-sid-3d-min-max-distance "TedSid_set3dMinMaxDistance") :void
+  (ted-sid ted-sid)
+  (min :float)
+  (max :float))
+
+(defcfun (set-ted-sid-3d-attenuation "TedSid_set3dAttenuation") :void
+  (ted-sid ted-sid)
+  (attenuation-model :uint)
+  (attenuation-rolloff-factor :float))
+
+(defcfun (set-ted-sid-3d-doppler-factor "TedSid_set3dDopplerFactor") :void
+  (ted-sid ted-sid)
+  (doppler-factor :float))
+
+(defcfun (set-ted-sid-3d-processing "TedSid_set3dProcessing") :void
+  (ted-sid ted-sid)
+  (do-3d-processing :int))
+
+(defcfun (set-ted-sid-3d-listener-relative "TedSid_set3dListenerRelative") :void
+  (ted-sid ted-sid)
+  (listener-relative :int))
+
+(defcfun (set-ted-sid-3d-distance-delay "TedSid_set3dDistanceDelay") :void
+  (ted-sid ted-sid)
+  (distance-delay :int))
+
+(defcfun (set-ted-sid-3d-collider "TedSid_set3dCollider") :void
+  (ted-sid ted-sid)
+  (audio-collider audio-collider))
+
+(defcfun (set-ted-sid-3d-collider* "TedSid_set3dColliderEx") :void
+  (ted-sid ted-sid)
+  (audio-collider audio-collider)
+  (user-data :int))
+
+(defcfun (set-ted-sid-3d-attenuator "TedSid_set3dAttenuator") :void
+  (ted-sid ted-sid)
+  (audio-attenuator audio-attenuator))
+
+(defcfun (set-ted-sid-3d-inaudible-behavior "TedSid_set3dInaudibleBehavior") :void
+  (ted-sid ted-sid)
+  (must-tick :int)
+  (kill :int))
+
+(defcfun (set-ted-sid-filter "TedSid_setFilter") :void
+  (ted-sid ted-sid)
+  (filter-id :uint)
+  (filter filter))
+
+(defcfun (stop-ted-sid "TedSid_stop") :void
+  (ted-sid ted-sid))
