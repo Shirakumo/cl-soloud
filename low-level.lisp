@@ -251,7 +251,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   (soloud soloud)
   (voice-handle :uint))
 
-(defcfun (get-relative-play-speed "Soloud_getRelativePlayPseed") :float
+(defcfun (get-relative-play-speed "Soloud_getRelativePlaySpeed") :float
   (soloud soloud)
   (voice-handle :uint))
 
@@ -602,7 +602,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (defcfun (create-biquad-resonant-filter "BiquadResonantFilter_create") biquad-resonant-filter)
 
-(defcfun (set-biquad-resonant-filter-params "BiquadResonantFilter_setParam") :int
+(defcfun (set-biquad-resonant-filter-params "BiquadResonantFilter_setParams") :int
   (biquad-resonant-filter biquad-resonant-filter)
   (type :int)
   (sample-rate :float)
@@ -807,7 +807,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (defcfun (destroy-bass-boost-filter "BassboostFilter_destroy") :void
   (bass-boost-filter bass-boost-filter))
 
-(defcfun (create-bass-boost-filter "BassboostFilterEchoFilter_create") bass-boost-filter)
+(defcfun (create-bass-boost-filter "BassboostFilter_create") bass-boost-filter)
 
 (defcfun (set-bass-boost-filter-params "BassboostFilter_setParams") :int
   (bass-boost-filter bass-boost-filter)
@@ -1300,7 +1300,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   (openmpt openmpt)
   (audio-attenuator audio-attenuator))
 
-(defcfun (set-openmpt-3d-inaudible-behavior "Openmpt_set3dInaudibleBehavior") :void
+(defcfun (set-openmpt-3d-inaudible-behavior "Openmpt_setInaudibleBehavior") :void
   (openmpt openmpt)
   (must-tick :int)
   (kill :int))
@@ -1403,7 +1403,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   (monotone monotone)
   (audio-attenuator audio-attenuator))
 
-(defcfun (set-monotone-3d-inaudible-behavior "Monotone_set3dInaudibleBehavior") :void
+(defcfun (set-monotone-3d-inaudible-behavior "Monotone_setInaudibleBehavior") :void
   (monotone monotone)
   (must-tick :int)
   (kill :int))
@@ -1452,9 +1452,6 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   (ted-sid ted-sid)
   (file file))
 
-(defcfun (get-ted-sid-length "TedSid_getLength") :double
-  (ted-sid ted-sid))
-
 (defcfun (set-ted-sid-volume "TedSid_setVolume") :void
   (ted-sid ted-sid)
   (volume :float))
@@ -1502,7 +1499,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   (ted-sid ted-sid)
   (audio-attenuator audio-attenuator))
 
-(defcfun (set-ted-sid-3d-inaudible-behavior "TedSid_set3dInaudibleBehavior") :void
+(defcfun (set-ted-sid-3d-inaudible-behavior "TedSid_setInaudibleBehavior") :void
   (ted-sid ted-sid)
   (must-tick :int)
   (kill :int))
