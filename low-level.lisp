@@ -785,17 +785,40 @@
   (bus bus))
 
 ;;; Echo Filter
-;; FIXME
+(defcfun (destroy-echo-filter "EchoFilter_destroy") :void
+  (echo-filter echo-filter))
+
+(defcfun (create-echo-filter "EchoFilter_create") echo-filter)
+
+(defcfun (set-echo-filter-params "EchoFilter_setParams") :int
+  (echo-filter echo-filter)
+  (delay :float))
+
+(defcfun (set-echo-filter-params* "EchoFilter_setParamsEx") :int
+  (echo-filter echo-filter)
+  (delay :float)
+  (decay :float)
+  (filter :float))
 
 ;;; FFT Filter
-;; FIXME
+(defcfun (destroy-fft-filter "FFTFilter_destroy") :void
+  (fft-filter fft-filter))
+
+(defcfun (create-fft-filter "FFTFilter_create") fft-filter)
 
 ;;; Bass Boost Filter
 (defcenum bass-boost-filter-flag
   (:wet                   0)
   (:boost                 1))
 
-;; FIXME
+(defcfun (destroy-bass-boost-filter "BassboostFilter_destroy") :void
+  (bass-boost-filter bass-boost-filter))
+
+(defcfun (create-bass-boost-filter "BassboostFilterEchoFilter_create") bass-boost-filter)
+
+(defcfun (set-bass-boost-filter-params "BassboostFilter_setParams") :int
+  (bass-boost-filter bass-boost-filter)
+  (boost :float))
 
 ;;; Speech
 (defcfun (destroy-speech "Speech_destroy") :void
@@ -1054,7 +1077,17 @@
   (wav-stream wav-stream))
 
 ;;; Prg
-;; FIXME
+(defcfun (destroy-prg "Prg_destroy") :void
+  (prg prg))
+
+(defcfun (create-prg "Prg_create") prg)
+
+(defcfun (prg-random "Prg_rand") :uint
+  (prg prg))
+
+(defcfun (prg-srandom "Prg_srand") :void
+  (prg prg)
+  (seed :int))
 
 ;;; Sfxr
 (defcenum sfxr-preset
@@ -1161,10 +1194,29 @@
   (:wet                   0)
   (:delay                 1)
   (:freq                  2))
-;; FIXME
+
+(defcfun (destroy-flanger-filter "FlangerFilter_destroy") :void
+  (flanger-filter flanger-filter))
+
+(defcfun (create-flanger-filter "FlangerFilter_create") flanger-filter)
+
+(defcfun (set-flanger-filter-params "FlangerFilter_setParams") :int
+  (flanger-filter flanger-filter)
+  (delay :float)
+  (freq :float))
 
 ;;; DC Removal Filter
-;; FIXME
+(defcfun (destroy-dc-removal-filter "DCRemovalFilter_destroy") :void
+  (dc-removal-filter dc-removal-filter))
+
+(defcfun (create-dc-removal-filter "DCRemovalFilter_create") dc-removal-filter)
+
+(defcfun (set-dc-removal-filter-params "DCRemovalFilter_setParams") :int
+  (dc-removal-filter dc-removal-filter))
+
+(defcfun (set-dc-removal-filter-params* "DCRemovalFilter_setParamsEx") :int
+  (dc-removal-filter dc-removal-filter)
+  (length :float))
 
 ;;; OpenMPT
 (defcfun (destroy-openmpt "Openmpt_destroy") :void
