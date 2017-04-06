@@ -53,6 +53,12 @@
   (:enable-visualization  2)
   (:left-handed-3d        4))
 
+(defcenum soloud-attenuation
+  (:no-attenuation        0)
+  (:inverse-distance      1)
+  (:linear-distance       2)
+  (:exponential-distance  3))
+
 (defcfun (create "Soloud_create") soloud)
 
 (defcfun (destroy "Soloud_destroy") :void
@@ -61,7 +67,7 @@
 (defcfun (init "Soloud_init") :void
   (soloud soloud))
 
-(defcfun (init-ex "Soloud_initEx") :void
+(defcfun (init* "Soloud_initEx") :void
   (soloud soloud)
   (flags soloud-flag)
   (backend soloud-backend)
@@ -366,7 +372,6 @@
 
 (defcfun (fade-global-volume "Soloud_fadeGlobalVolume") :void
   (soloud soloud)
-  (voice-handle :uint)
   (to :float)
   (time :double))
 
@@ -403,7 +408,6 @@
 
 (defcfun (oscillate-global-volume "Soloud_oscillateGlobalVolume") :void
   (soloud soloud)
-  (voice-handle :uint)
   (from :float)
   (to :float)
   (time :double))
@@ -553,7 +557,7 @@
 (defcfun (set-3d-source-attenuation "Soloud_set3dSourceAttenuation") :void
   (soloud soloud)
   (voice-handle :uint)
-  (attenuation-model :uint)
+  (attenuation-model soloud-attenuation)
   (attenuation-rolloff-factor :float))
 
 (defcfun (set-3d-source-doppler-factor "Soloud_set3dSourceDopplerFactor") :void
@@ -731,7 +735,7 @@
 
 (defcfun (set-bus-3d-attenuation "Bus_set3dAttenuation") :void
   (bus bus)
-  (attenuation-model :uint)
+  (attenuation-model soloud-attenuation)
   (attenuation-rolloff-factor :float))
 
 (defcfun (set-bus-3d-doppler-factor "Bus_set3dDopplerFactor") :void
@@ -840,7 +844,7 @@
 
 (defcfun (set-speech-3d-attenuation "Speech_set3dAttenuation") :void
   (speech speech)
-  (attenuation-model :uint)
+  (attenuation-model soloud-attenuation)
   (attenuation-rolloff-factor :float))
 
 (defcfun (set-speech-3d-doppler-factor "Speech_set3dDopplerFactor") :void
@@ -931,7 +935,7 @@
 
 (defcfun (set-wav-3d-attenuation "Wav_set3dAttenuation") :void
   (wav wav)
-  (attenuation-model :uint)
+  (attenuation-model soloud-attenuation)
   (attenuation-rolloff-factor :float))
 
 (defcfun (set-wav-3d-doppler-factor "Wav_set3dDopplerFactor") :void
@@ -1030,7 +1034,7 @@
 
 (defcfun (set-wav-stream-3d-attenuation "WavStream_set3dAttenuation") :void
   (wav-stream wav-stream)
-  (attenuation-model :uint)
+  (attenuation-model soloud-attenuation)
   (attenuation-rolloff-factor :float))
 
 (defcfun (set-wav-stream-3d-doppler-factor "WavStream_set3dDopplerFactor") :void
@@ -1147,7 +1151,7 @@
 
 (defcfun (set-sfxr-3d-attenuation "Sfxr_set3dAttenuation") :void
   (sfxr sfxr)
-  (attenuation-model :uint)
+  (attenuation-model soloud-attenuation)
   (attenuation-rolloff-factor :float))
 
 (defcfun (set-sfxr-3d-doppler-factor "Sfxr_set3dDopplerFactor") :void
@@ -1268,7 +1272,7 @@
 
 (defcfun (set-openmpt-3d-attenuation "Openmpt_set3dAttenuation") :void
   (openmpt openmpt)
-  (attenuation-model :uint)
+  (attenuation-model soloud-attenuation)
   (attenuation-rolloff-factor :float))
 
 (defcfun (set-openmpt-3d-doppler-factor "Openmpt_set3dDopplerFactor") :void
@@ -1371,7 +1375,7 @@
 
 (defcfun (set-monotone-3d-attenuation "Monotone_set3dAttenuation") :void
   (monotone monotone)
-  (attenuation-model :uint)
+  (attenuation-model soloud-attenuation)
   (attenuation-rolloff-factor :float))
 
 (defcfun (set-monotone-3d-doppler-factor "Monotone_set3dDopplerFactor") :void
@@ -1467,7 +1471,7 @@
 
 (defcfun (set-ted-sid-3d-attenuation "TedSid_set3dAttenuation") :void
   (ted-sid ted-sid)
-  (attenuation-model :uint)
+  (attenuation-model soloud-attenuation)
   (attenuation-rolloff-factor :float))
 
 (defcfun (set-ted-sid-3d-doppler-factor "TedSid_set3dDopplerFactor") :void

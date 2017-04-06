@@ -22,10 +22,11 @@
    #:filter
    #:soloud-backend
    #:soloud-flag
+   #:soloud-attenuation
    #:create
    #:destroy
    #:init
-   #:init-ex
+   #:init*
    #:deinit
    #:get-version
    #:get-error-string
