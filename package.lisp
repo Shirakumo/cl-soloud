@@ -206,10 +206,10 @@
    #:wav
    #:destroy-wav
    #:create-wav
-   #:wav-load
-   #:wav-load-mem
-   #:wav-load-mem*
-   #:wav-load-file
+   #:load-wav
+   #:load-wav-mem
+   #:load-wav-mem*
+   #:load-wav-file
    #:get-wav-length
    #:set-wav-volume
    #:set-wav-looping
@@ -229,11 +229,11 @@
    #:wav-stream
    #:destroy-wav-stream
    #:create-wav-stream
-   #:wav-stream-load
-   #:wav-stream-load-mem
-   #:wav-stream-load-mem*
-   #:wav-stream-load-to-mem
-   #:wav-stream-load-file
+   #:load-wav-stream
+   #:load-wav-stream-mem
+   #:load-wav-stream-mem*
+   #:load-wav-stream-to-mem
+   #:load-wav-stream-file
    #:wav-stream-file-load-to-mem
    #:get-wav-stream-length
    #:set-wav-stream-volume
@@ -296,10 +296,10 @@
    #:openmpt
    #:destroy-openmpt
    #:create-openmpt
-   #:openmpt-load
-   #:openmpt-load-mem
-   #:openmpt-load-mem*
-   #:openmpt-load-file
+   #:load-openmpt
+   #:load-openmpt-mem
+   #:load-openmpt-mem*
+   #:load-openmpt-file
    #:set-openmpt-volume
    #:set-openmpt-looping
    #:set-openmpt-3d-min-max-distance
@@ -321,10 +321,10 @@
    #:create-monotone
    #:set-monotone-params
    #:set-monotone-params*
-   #:monotone-load
-   #:monotone-load-mem
-   #:monotone-load-mem*
-   #:monotone-load-file
+   #:load-monotone
+   #:load-monotone-mem
+   #:load-monotone-mem*
+   #:load-monotone-file
    #:set-monotone-volume
    #:set-monotone-looping
    #:set-monotone-3d-min-max-distance
@@ -343,12 +343,12 @@
    #:ted-sid
    #:destroy-ted-sid
    #:create-ted-sid
-   #:ted-sid-load
-   #:ted-sid-load-to-mem
-   #:ted-sid-load-mem
-   #:ted-sid-load-mem*
-   #:ted-sid-load-file
-   #:ted-sid-load-file-to-mem
+   #:load-ted-sid
+   #:load-ted-sid-to-mem
+   #:load-ted-sid-mem
+   #:load-ted-sid-mem*
+   #:load-ted-sid-file
+   #:load-ted-sid-file-to-mem
    #:set-ted-sid-volume
    #:set-ted-sid-looping
    #:set-ted-sid-3d-min-max-distance

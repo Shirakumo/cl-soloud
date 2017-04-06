@@ -899,23 +899,23 @@
 
 (defcfun (create-wav "Wav_create") wav)
 
-(defcfun (wav-load "Wav_load") :int
+(defcfun (load-wav "Wav_load") :int
   (wav wav)
   (filename :string))
 
-(defcfun (wav-load-mem "Wav_loadMem") :int
+(defcfun (load-wav-mem "Wav_loadMem") :int
   (wav wav)
   (mem :pointer)
   (length :uint))
 
-(defcfun (wav-load-mem* "Wav_loadMemEx") :int
+(defcfun (load-wav-mem* "Wav_loadMemEx") :int
   (wav wav)
   (mem :pointer)
   (length :uint)
   (copy :int)
   (take-ownership :int))
 
-(defcfun (wav-load-file "Wav_loadFile") :int
+(defcfun (load-wav-file "Wav_loadFile") :int
   (wav wav)
   (file file))
 
@@ -990,31 +990,31 @@
 
 (defcfun (create-wav-stream "WavStream_create") wav-stream)
 
-(defcfun (wav-stream-load "WavStream_load") :int
+(defcfun (load-wav-stream "WavStream_load") :int
   (wav-stream wav-stream)
   (filename :string))
 
-(defcfun (wav-stream-load-mem "WavStream_loadMem") :int
+(defcfun (load-wav-stream-mem "WavStream_loadMem") :int
   (wav-stream wav-stream)
   (mem :pointer)
   (length :uint))
 
-(defcfun (wav-stream-load-mem* "WavStream_loadMemEx") :int
+(defcfun (load-wav-stream-mem* "WavStream_loadMemEx") :int
   (wav-stream wav-stream)
   (mem :pointer)
   (length :uint)
   (copy :int)
   (take-ownership :int))
 
-(defcfun (wav-stream-load-to-mem "WavStream_loadToMem") :int
+(defcfun (load-wav-stream-to-mem "WavStream_loadToMem") :int
   (wav-stream wav-stream)
   (filename :string))
 
-(defcfun (wav-stream-load-file "WavStream_loadFile") :int
+(defcfun (load-wav-stream-file "WavStream_loadFile") :int
   (wav-stream wav-stream)
   (file file))
 
-(defcfun (wav-stream-file-load-to-mem "WavStream_loadFileToMem") :int
+(defcfun (load-wav-stream-file-to-mem "WavStream_loadFileToMem") :int
   (wav-stream wav-stream)
   (file file))
 
@@ -1239,23 +1239,23 @@
 
 (defcfun (create-openmpt "Openmpt_create") openmpt)
 
-(defcfun (openmpt-load "Openmpt_load") :int
+(defcfun (load-openmpt "Openmpt_load") :int
   (openmpt openmpt)
   (filename :string))
 
-(defcfun (openmpt-load-mem "Openmpt_loadMem") :int
+(defcfun (load-openmpt-mem "Openmpt_loadMem") :int
   (openmpt openmpt)
   (mem :pointer)
   (length :uint))
 
-(defcfun (openmpt-load-mem* "Openmpt_loadMemEx") :int
+(defcfun (load-openmpt-mem* "Openmpt_loadMemEx") :int
   (openmpt openmpt)
   (mem :pointer)
   (length :uint)
   (copy :int)
   (take-ownership :int))
 
-(defcfun (openmpt-load-file "Openmpt_loadFile") :int
+(defcfun (load-openmpt-file "Openmpt_loadFile") :int
   (openmpt openmpt)
   (file file))
 
@@ -1342,23 +1342,23 @@
   (hardware-channels :int)
   (wave-form monotone-waveform))
 
-(defcfun (monotone-load "Monotone_load") :int
+(defcfun (load-monotone "Monotone_load") :int
   (monotone monotone)
   (filename :string))
 
-(defcfun (monotone-load-mem "Monotone_loadMem") :int
+(defcfun (load-monotone-mem "Monotone_loadMem") :int
   (monotone monotone)
   (mem :pointer)
   (length :uint))
 
-(defcfun (monotone-load-mem* "Monotone_loadMemEx") :int
+(defcfun (load-monotone-mem* "Monotone_loadMemEx") :int
   (monotone monotone)
   (mem :pointer)
   (length :uint)
   (copy :int)
   (take-ownership :int))
 
-(defcfun (monotone-load-file "Monotone_loadFile") :int
+(defcfun (load-monotone-file "Monotone_loadFile") :int
   (monotone monotone)
   (file file))
 
@@ -1430,31 +1430,31 @@
 
 (defcfun (create-ted-sid "TedSid_create") ted-sid)
 
-(defcfun (ted-sid-load "TedSid_load") :int
+(defcfun (load-ted-sid "TedSid_load") :int
   (ted-sid ted-sid)
   (filename :string))
 
-(defcfun (ted-sid-load-to-mem "TedSid_loadToMem") :int
+(defcfun (load-ted-sid-to-mem "TedSid_loadToMem") :int
   (ted-sid ted-sid)
   (filename :string))
 
-(defcfun (ted-sid-load-mem "TedSid_loadMem") :int
+(defcfun (load-ted-sid-mem "TedSid_loadMem") :int
   (ted-sid ted-sid)
   (mem :pointer)
   (length :uint))
 
-(defcfun (ted-sid-load-mem* "TedSid_loadMemEx") :int
+(defcfun (load-ted-sid-mem* "TedSid_loadMemEx") :int
   (ted-sid ted-sid)
   (mem :pointer)
   (length :uint)
   (copy :int)
   (take-ownership :int))
 
-(defcfun (ted-sid-load-file "TedSid_loadFile") :int
+(defcfun (load-ted-sid-file "TedSid_loadFile") :int
   (ted-sid ted-sid)
   (file file))
 
-(defcfun (ted-sid-load-file-to-mem "TedSid_loadFileToMem") :int
+(defcfun (load-ted-sid-file-to-mem "TedSid_loadFileToMem") :int
   (ted-sid ted-sid)
   (file file))
 
