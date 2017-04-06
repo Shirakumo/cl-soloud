@@ -12,6 +12,7 @@
   (:shadow :open :close :continue)
   (:export
    #:*static*
+   #:*max-filters*
    #:libsoloud
    ;; SoLoud
    #:soloud

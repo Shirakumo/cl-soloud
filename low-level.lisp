@@ -10,6 +10,8 @@
 (defvar *static* (make-pathname :name NIL :type NIL :defaults (merge-pathnames "static/" *here*)))
 (pushnew *static* cffi:*foreign-library-directories*)
 
+(defvar *max-filters* 4)
+
 (define-foreign-library libsoloud
   (:darwin (:or "libsoloud.dylib" "libsoloud.so"
                 #+X86 "mac32-libsoloud.dylib"

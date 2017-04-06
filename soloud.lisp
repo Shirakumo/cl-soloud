@@ -92,7 +92,7 @@
   (check-type fade (or null (float 0.0)))
   (if fade
       (cl-soloud-cffi:fade-volume (handle (soloud playback)) (handle playback) volume fade)
-      (cl-soloud-cffi:set-volume (handle (soloud playback)) (handle playback) volume))))
+      (cl-soloud-cffi:set-volume (handle (soloud playback)) (handle playback) volume)))
 
 (defmethod pan ((playback playback))
   (cl-soloud-cffi:get-pan (handle (soloud playback)) (handle playback)))
@@ -102,7 +102,7 @@
   (check-type fade (or null (float 0.0)))
   (if fade
       (cl-soloud-cffi:fade-pan (handle (soloud playback)) (handle playback) pan fade)
-      (cl-soloud-cffi:set-pan (handle (soloud playback)) (handle playback) pan))))
+      (cl-soloud-cffi:set-pan (handle (soloud playback)) (handle playback) pan)))
 
 (defmethod set-absolute-pan ((playback playback) &key front-left front-right
                                                       (back-left front-left)
@@ -127,7 +127,7 @@
   (check-type fade (or null (float 0.0)))
   (if fade
       (cl-soloud-cffi:fade-relative-play-speed (handle (soloud playback)) (handle playback) relative-speed fade)
-      (cl-soloud-cffi:set-relative-play-speed (handle (soloud playback)) (handle playback) relative-speed))))
+      (cl-soloud-cffi:set-relative-play-speed (handle (soloud playback)) (handle playback) relative-speed)))
 
 (defmethod paused ((playback playback))
   (if (= 0 (cl-soloud-cffi:get-pause (handle (soloud playback)) (handle playback)))
@@ -254,6 +254,14 @@
 (defmethod (setf doppler-factor) (value (playback playback))
   (cl-soloud-cffi:set-3d-source-doppler-factor (handle (soloud playback)) (handle playback) value)
   (cl-soloud-cffi:update-3d-audio (handle soloud)))
+
+(defmethod filter-parameter ((playback playback) filter attribute)
+  (check-type filter (integer 0 #.(1- cl-soloud-cffi:*max-filters*)))
+  (cl-soloud-cffi:get-filter-parameter (handle (soloud playback)) (handle playback) filter attribute))
+
+(defmethod (setf filter-parameter) (value (playback playback) filter attribute)
+  (check-type filter (integer 0 #.(1- cl-soloud-cffi:*max-filters*)))
+  (cl-soloud-cffi:set-filter-parameter (handle (soloud playback)) (handle playback) filter attribute value))
 
 (defclass group (playback)
   ())
