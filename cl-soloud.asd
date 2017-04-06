@@ -15,7 +15,9 @@
   :serial T
   :components ((:file "package")
                (:file "low-level")
-               (:file "wrapper")
+               (:file "soloud")
+               (:file "source")
+               (:file "filter")
                (:file "documentation"))
   :depends-on (:cffi
                :trivial-features

@@ -12,6 +12,9 @@
 (defclass source ()
   ((handle :initform NIL :accessor handle)))
 
+(defclass filter ()
+  ((handle :initform NIL :accessor handle)))
+
 (defclass playback ()
   ((handle :initarg :handle :initform NIL :accessor handle)
    (soloud :initarg :soloud :initform NIL :accessor soloud)))
