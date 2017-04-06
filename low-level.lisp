@@ -589,7 +589,7 @@
   (rolloff :float))
 
 ;;; Biquad Resonant Filter
-(defcenum biquad-resonant-filter-pass
+(defcenum biquad-resonant-filter-type
   (:none                  0)
   (:lowpass               1)
   (:highpass              2)
@@ -610,7 +610,7 @@
 
 (defcfun (set-biquad-resonant-filter-params "BiquadResonantFilter_setParams") :int
   (biquad-resonant-filter biquad-resonant-filter)
-  (type :int)
+  (type biquad-resonant-filter-type)
   (sample-rate :float)
   (frequency :float)
   (resonance :float))

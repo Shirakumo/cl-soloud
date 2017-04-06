@@ -125,7 +125,7 @@
    #:destroy-audio-attenuator
    #:attenuate-audio-attenuator
    ;; Biquad Resonant Filter
-   #:biquad-resonant-filter-pass
+   #:biquad-resonant-filter-type
    #:biquad-resonant-filter-flag
    #:biquad-resonant-filter
    #:destroy-biquad-resonant-filter
