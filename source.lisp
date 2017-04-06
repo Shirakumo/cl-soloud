@@ -6,13 +6,14 @@
 
 (in-package #:org.shirakumo.fraf.soloud)
 
-(defun find-cffi-symbol (temp fill)
-  (find-symbol (with-output-to-string (o)
-                 (loop for c across (string temp)
-                       do (if (eql c #\_)
-                              (write-sequence (string fill) o)
-                              (write-char c o))))
-               '#:org.shirakumo.fraf.soloud.cffi))
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defun find-cffi-symbol (temp fill)
+    (find-symbol (with-output-to-string (o)
+                   (loop for c across (string temp)
+                         do (if (eql c #\_)
+                                (write-sequence (string fill) o)
+                                (write-char c o))))
+                 '#:org.shirakumo.fraf.soloud.cffi)))
 
 (defmacro define-source (class &optional (name class))
   (flet ((fun (symb &rest args)
@@ -24,7 +25,7 @@
        (defclass ,class (source)
          ())
        
-       (defmethod (setf volume) (value (,name ,class))
+       (defmethod (setf volume) (value (,name ,class) &key fade)
          ,(fun 'set-_-volume 'value))
        
        (defmethod (setf looping) (value (,name ,class))
@@ -102,7 +103,7 @@
   (cl-soloud-cffi:load-sfxr-params
    (handle source) (uiop:native-namestring file)))
 
-(defmethod load ((source sfxr-source) (preset keyword))
+(defmethod load ((source sfxr-source) (preset symbol))
   (cl-soloud-cffi:load-sfxr-preset
    (handle source) preset (random (ash 1 (* 8 (cffi:foreign-type-size :int))))))
 

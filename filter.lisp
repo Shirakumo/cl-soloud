@@ -32,9 +32,9 @@
     (setf (handle filter) handle)
     (tg:finalize filter (lambda () (cl-soloud-cffi:destroy-echo-filter handle)))))
 
-(defmethod set-parameters ((filter echo-filter) &key delay decay filter)
+(defmethod set-parameters ((filter echo-filter) &key delay decay filter-type)
   (cl-soloud-cffi:set-echo-filter-params*
-   (handle filter) delay decay filter))
+   (handle filter) delay decay filter-type))
 
 (defclass lofi-filter (filter)
   ())
