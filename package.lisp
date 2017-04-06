@@ -367,4 +367,5 @@
 (defpackage #:cl-soloud
   (:nicknames #:org.shirakumo.fraf.soloud)
   (:use #:cl #:cffi)
+  (:shadow #:load)
   )

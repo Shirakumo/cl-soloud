@@ -1136,7 +1136,7 @@
 (defcfun (load-sfxr-preset "Sfxr_loadPreset") :int
   (sfxr sfxr)
   (preset-no sfxr-preset)
-  (max-distance :float))
+  (seed :float))
 
 (defcfun (set-sfxr-volume "Sfxr_setVolume") :void
   (sfxr sfxr)

@@ -6,17 +6,21 @@
 
 (in-package #:org.shirakumo.fraf.soloud)
 
-(defclass soloud ()
+(defclass c-backed-object ()
   ((handle :initform NIL :accessor handle)))
 
-(defclass source ()
-  ((handle :initform NIL :accessor handle)))
+(defclass soloud (c-backed-object) ())
 
-(defclass filter ()
-  ((handle :initform NIL :accessor handle)))
+(defclass source (c-backed-object) ())
 
-(defclass playback ()
-  ((handle :initarg :handle :initform NIL :accessor handle)
+(defclass filter (c-backed-object) ())
+
+(defclass collider (c-backed-object) ())
+
+(defclass attenuator (c-backed-object) ())
+
+(defclass playback (c-backed-object)
+  ((handle :initarg :handle)
    (soloud :initarg :soloud :initform NIL :accessor soloud)))
 
 (defun compute-flags (flags)
