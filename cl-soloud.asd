@@ -15,6 +15,7 @@
   :serial T
   :components ((:file "package")
                (:file "low-level")
+               (:file "wrapper")
                (:file "documentation"))
   :depends-on (:cffi
                :trivial-features
