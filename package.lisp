@@ -362,7 +362,32 @@
    #:set-ted-sid-3d-attenuator
    #:set-ted-sid-3d-inaudible-behavior
    #:set-ted-sid-filter
-   #:stop-ted-sid))
+   #:stop-ted-sid
+   ;; VirtualFilter
+   #:virtual-filter
+   #:destroy-virtual-filter
+   #:create-virtual-filter
+   #:set-virtual-filter-filter
+   #:set-virtual-filter-filter-channel
+   ;; VirtualAudioSource
+   #:virtual-audio-source
+   #:destroy-virtual-audio-source
+   #:create-virtual-audio-source
+   #:set-virtual-audio-source-get-audio
+   #:set-virtual-audio-source-has-ended
+   #:set-virtual-audio-source-seek
+   #:set-virtual-audio-source-rewind
+   #:set-virtual-audio-source-get-info
+   ;; VirtualAudioCollider
+   #:virtual-audio-collider
+   #:destroy-virtual-audio-collider
+   #:create-virtual-audio-collider
+   #:set-virtual-audio-collider-collide
+   ;; VirtualAudioAttenuator
+   #:virtual-audio-attenuator
+   #:destroy-virtual-audio-attenuator
+   #:create-virtual-audio-attenuator
+   #:set-virtual-audio-attenuator-attenuate))
 
 (defpackage #:cl-soloud
   (:nicknames #:org.shirakumo.fraf.soloud)
