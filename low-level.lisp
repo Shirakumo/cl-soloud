@@ -1524,8 +1524,7 @@
 (defcfun (destroy-virtual-filter "VirtualFilter_destroy") :void
   (virtual-filter virtual-filter))
 
-(defcfun (create-virtual-filter "VirtualFilter_create") virtual-filter
-  (classID :uint))
+(defcfun (create-virtual-filter "VirtualFilter_create") virtual-filter)
 
 (defcfun (set-virtual-filter-filter "VirtualFilter_setFilterCallback") :void
   (function :pointer))
@@ -1539,8 +1538,7 @@
 (defcfun (destroy-virtual-audio-source "VirtualAudioSource_destroy") :void
   (virtual-audio-source virtual-audio-source))
 
-(defcfun (create-virtual-audio-source "VirtualAudioSource_create") virtual-audio-source
-  (classID :uint))
+(defcfun (create-virtual-audio-source "VirtualAudioSource_create") virtual-audio-source)
 
 (defcfun (set-virtual-audio-source-get-audio "VirtualAudioSource_setGetAudioCallback") :void
   (function :pointer))
@@ -1563,8 +1561,7 @@
 (defcfun (destroy-virtual-audio-collider "VirtualAudioCollider_destroy") :void
   (virtual-audio-collider virtual-audio-collider))
 
-(defcfun (create-virtual-audio-collider "VirtualAudioCollider_create") virtual-audio-collider
-  (classID :uint))
+(defcfun (create-virtual-audio-collider "VirtualAudioCollider_create") virtual-audio-collider)
 
 (defcfun (set-virtual-audio-collider-collide "VirtualAudioCollider_setCollideCallback") :void
   (function :pointer))
@@ -1575,8 +1572,7 @@
 (defcfun (destroy-virtual-audio-attenuator "VirtualAudioAttenuator_destroy") :void
   (virtual-audio-attenuator virtual-audio-attenuator))
 
-(defcfun (create-virtual-audio-attenuator "VirtualAudioAttenuator_create") virtual-audio-attenuator
-  (classID :uint))
+(defcfun (create-virtual-audio-attenuator "VirtualAudioAttenuator_create") virtual-audio-attenuator)
 
 (defcfun (set-virtual-audio-attenuator-attenuate "VirtualAudioAttenuator_setAttenuateCallback") :void
   (function :pointer))
