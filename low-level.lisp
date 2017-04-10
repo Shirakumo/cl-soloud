@@ -10,7 +10,7 @@
 (defvar *static* (make-pathname :name NIL :type NIL :defaults (merge-pathnames "static/" *here*)))
 (pushnew *static* cffi:*foreign-library-directories*)
 
-(defvar *max-filters* 4)
+(defvar *max-filters* 8)
 (defvar *max-sources* 1024)
 
 (define-foreign-library libsoloud
