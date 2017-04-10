@@ -6,6 +6,9 @@
 
 (in-package #:org.shirakumo.fraf.soloud)
 
+(defclass filter (c-backed-object)
+  ())
+
 (defgeneric set-parameters (filter &key &allow-other-keys))
 
 (defclass biquad-resonant-filter (filter)

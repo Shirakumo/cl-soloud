@@ -6,15 +6,8 @@
 
 (in-package #:org.shirakumo.fraf.soloud)
 
-(defclass soloud (c-backed-object) ())
-
-(defclass source (c-backed-object) ())
-
-(defclass filter (c-backed-object) ())
-
-(defclass collider (c-backed-object) ())
-
-(defclass attenuator (c-backed-object) ())
+(defclass soloud (c-backed-object)
+  ())
 
 (defclass playback (c-backed-object)
   ((handle :initarg :handle)

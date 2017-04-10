@@ -6,14 +6,14 @@
 
 (in-package #:org.shirakumo.fraf.soloud)
 
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (defun find-cffi-symbol (temp fill)
-    (find-symbol (with-output-to-string (o)
-                   (loop for c across (string temp)
-                         do (if (eql c #\_)
-                                (write-sequence (string fill) o)
-                                (write-char c o))))
-                 '#:org.shirakumo.fraf.soloud.cffi)))
+(defclass source (c-backed-object)
+  ())
+
+(defclass collider (c-backed-object)
+  ())
+
+(defclass attenuator (c-backed-object)
+  ())
 
 (defmacro define-internal-source (class &optional (name class) superclasses)
   (flet ((fun (symb &rest args)

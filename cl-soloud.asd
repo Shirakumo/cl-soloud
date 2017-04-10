@@ -16,9 +16,9 @@
   :components ((:file "package")
                (:file "low-level")
                (:file "toolkit")
-               (:file "soloud")
-               (:file "source")
                (:file "filter")
+               (:file "source")
+               (:file "soloud")
                (:file "documentation"))
   :depends-on (:cffi
                :trivial-features

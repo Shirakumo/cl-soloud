@@ -34,3 +34,11 @@
      (error (err)
        (format T "~&! Error in callback: ~a~%" err)
        ,default)))
+
+(defun find-cffi-symbol (temp fill)
+  (find-symbol (with-output-to-string (o)
+                 (loop for c across (string temp)
+                       do (if (eql c #\_)
+                              (write-sequence (string fill) o)
+                              (write-char c o))))
+               '#:org.shirakumo.fraf.soloud.cffi))
