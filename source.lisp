@@ -137,7 +137,7 @@
   (cl-soloud-cffi:load-ted-sid-mem*
    (handle source) pointer length (if copy 1 0) (if take-ownership 1 0)))
 
-(define-internal-source virtual-audio-source virtual-audio)
+(define-internal-source virtual-audio-source)
 
 (defmacro define-source (name direct-superclasses direct-slots &body options)
   `(defclass ,name (,@direct-superclasses virtual-audio-source)
