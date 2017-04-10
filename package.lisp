@@ -66,6 +66,7 @@
    #:get-post-clip-scaler
    #:get-global-volume
    #:get-max-active-voice-count
+   #:get-voice-count
    #:get-looping
    #:set-looping
    #:set-max-active-voice-count
@@ -442,7 +443,8 @@
    #:stop
    #:looping
    #:protected
-   #:max-active-playback
+   #:max-active-playback-count
+   #:active-playback-count
    #:sample-rate
    #:oscillate-volume
    #:oscillate-pan

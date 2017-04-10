@@ -49,6 +49,9 @@
 (defmethod play ((source source) (soloud soloud) &key (volume 1.0) (pan 0.0) paused delay location velocity (bus 0))
   (check-type volume (float 0.0 1.0))
   (check-type pan (float -1.0 1.0))
+  (when (<= (max-active-playback-count soloud) (active-playback-count soloud))
+    (error "Reached maximum number of playbacks (~d)"
+           (max-active-playback-count soloud)))
   (let ((paused (if paused 1 0)))
     (make-instance
      'playback
@@ -164,12 +167,15 @@
   (cl-soloud-cffi:set-protect-voice (handle (soloud playback)) (handle playback)
                             (if value 1 0)))
 
-(defmethod max-active-playback ((soloud soloud))
+(defmethod max-active-playback-count ((soloud soloud))
   (cl-soloud-cffi:get-max-active-voice-count (handle soloud)))
 
-(defmethod (setf max-active-playback) (count (soloud soloud))
+(defmethod (setf max-active-playback-count) (count (soloud soloud))
   (check-type count (integer 0))
   (cl-soloud-cffi:set-max-active-voice-count (handle soloud) count))
+
+(defmethod active-playback-count ((soloud soloud))
+  (cl-soloud-cffi:get-voice-count (handle soloud)))
 
 (defmethod sample-rate ((playback playback))
   (cl-soloud-cffi:get-sample-rate (handle (soloud playback)) (handle playback)))

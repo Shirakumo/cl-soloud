@@ -272,6 +272,9 @@
 (defcfun (get-max-active-voice-count "Soloud_getMaxActiveVoiceCount") :uint
   (soloud soloud))
 
+(defcfun (get-voice-count "Soloud_getVoiceCount") :uint
+  (soloud soloud))
+
 (defcfun (get-looping "Soloud_getLooping") :int
   (soloud soloud)
   (voice-handle :uint))
