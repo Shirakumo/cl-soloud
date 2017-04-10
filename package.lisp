@@ -378,6 +378,20 @@
    #:set-virtual-audio-source-seek
    #:set-virtual-audio-source-rewind
    #:set-virtual-audio-source-get-info
+   #:set-virtual-audio-source-volume
+   #:set-virtual-audio-source-looping
+   #:set-virtual-audio-source-3d-min-max-distance
+   #:set-virtual-audio-source-3d-attenuation
+   #:set-virtual-audio-source-3d-doppler-factor
+   #:set-virtual-audio-source-3d-processing
+   #:set-virtual-audio-source-3d-listener-relative
+   #:set-virtual-audio-source-3d-distance-delay
+   #:set-virtual-audio-source-3d-collider
+   #:set-virtual-audio-source-3d-collider*
+   #:set-virtual-audio-source-3d-attenuator
+   #:set-virtual-audio-source-3d-inaudible-behavior
+   #:set-virtual-audio-source-filter
+   #:stop-virtual-audio-source
    ;; VirtualAudioCollider
    #:virtual-audio-collider
    #:destroy-virtual-audio-collider

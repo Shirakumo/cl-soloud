@@ -1555,6 +1555,66 @@
 (defcfun (set-virtual-audio-source-get-info "VirtualAudioSource_setGetInfoCallback") :void
   (function :pointer))
 
+(defcfun (set-virtual-audio-source-volume "VirtualAudioSource_setVolume") :void
+  (virtual-audio-source virtual-audio-source)
+  (volume :float))
+
+(defcfun (set-virtual-audio-source-looping "VirtualAudioSource_setLooping") :void
+  (virtual-audio-source virtual-audio-source)
+  (looping :int))
+
+(defcfun (set-virtual-audio-source-3d-min-max-distance "VirtualAudioSource_set3dMinMaxDistance") :void
+  (virtual-audio-source virtual-audio-source)
+  (min :float)
+  (max :float))
+
+(defcfun (set-virtual-audio-source-3d-attenuation "VirtualAudioSource_set3dAttenuation") :void
+  (virtual-audio-source virtual-audio-source)
+  (attenuation-model soloud-attenuation)
+  (attenuation-rolloff-factor :float))
+
+(defcfun (set-virtual-audio-source-3d-doppler-factor "VirtualAudioSource_set3dDopplerFactor") :void
+  (virtual-audio-source virtual-audio-source)
+  (doppler-factor :float))
+
+(defcfun (set-virtual-audio-source-3d-processing "VirtualAudioSource_set3dProcessing") :void
+  (virtual-audio-source virtual-audio-source)
+  (do-3d-processing :int))
+
+(defcfun (set-virtual-audio-source-3d-listener-relative "VirtualAudioSource_set3dListenerRelative") :void
+  (virtual-audio-source virtual-audio-source)
+  (listener-relative :int))
+
+(defcfun (set-virtual-audio-source-3d-distance-delay "VirtualAudioSource_set3dDistanceDelay") :void
+  (virtual-audio-source virtual-audio-source)
+  (distance-delay :int))
+
+(defcfun (set-virtual-audio-source-3d-collider "VirtualAudioSource_set3dCollider") :void
+  (virtual-audio-source virtual-audio-source)
+  (audio-collider audio-collider))
+
+(defcfun (set-virtual-audio-source-3d-collider* "VirtualAudioSource_set3dColliderEx") :void
+  (virtual-audio-source virtual-audio-source)
+  (audio-collider audio-collider)
+  (user-data :int))
+
+(defcfun (set-virtual-audio-source-3d-attenuator "VirtualAudioSource_set3dAttenuator") :void
+  (virtual-audio-source virtual-audio-source)
+  (audio-attenuator audio-attenuator))
+
+(defcfun (set-virtual-audio-source-3d-inaudible-behavior "VirtualAudioSource_setInaudibleBehavior") :void
+  (virtual-audio-source virtual-audio-source)
+  (must-tick :int)
+  (kill :int))
+
+(defcfun (set-virtual-audio-source-filter "VirtualAudioSource_setFilter") :void
+  (virtual-audio-source virtual-audio-source)
+  (filter-id :uint)
+  (filter filter))
+
+(defcfun (stop-virtual-audio-source "VirtualAudioSource_stop") :void
+  (virtual-audio-source virtual-audio-source))
+
 ;;; VirtualAudioCollider
 (defctype virtual-audio-collider :pointer)
 
