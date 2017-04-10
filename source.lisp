@@ -7,7 +7,35 @@
 (in-package #:org.shirakumo.fraf.soloud)
 
 (defclass source (c-backed-object)
-  ())
+  ((filter-map :initform (make-hash-table :test 'eql) :accessor filter-map)))
+
+;; Not great that we have to dupe this information here, but I don't want
+;; to explode the C api any more than it already has been.
+(defmethod filters ((source source))
+  (alexandria:hash-table-values (filter-map source)))
+
+(defmethod filter ((source source) index)
+  (gethash index (filter-map source)))
+
+(defmethod (setf filter) :after ((filter filter) (source source) index)
+  (setf (gethash index (filter-map source)) filter))
+
+(defmethod (setf filter) :after ((null null) (source source) index)
+  (remhash index (filter-map source)))
+
+(defmethod add ((filter filter) (source source))
+  (let ((taken (alexandria:hash-table-keys (filter-map source)))
+        (all (loop for i from 0 below #.cl-soloud-cffi:*max-filters* collect i)))
+    (let ((id (first (set-difference all taken))))
+      (assert (not (null id)) (id) "You cannot add more than ~s filters to a source."
+              cl-soloud-cffi:*max-filters*)
+      (setf (filter source id) filter)))
+  filter)
+
+(defmethod withdraw ((filter filter) (source source))
+  (loop for k being the hash-keys of (filter-map source)
+        for v being the hash-values of (filter-map source)
+        do (when (eql v filter) (setf (filter source k) NIL))))
 
 (defclass collider (c-backed-object)
   ())
@@ -32,54 +60,71 @@
          (lambda () ,(fun 'destroy-_ 'handle)))
        
        (defmethod (setf volume) (value (,name ,class) &key fade)
-         ,(fun 'set-_-volume 'value))
+         ,(fun 'set-_-volume 'value)
+         value)
        
        (defmethod (setf looping) (value (,name ,class))
-         ,(fun 'set-_-looping '(if value 1 0)))
+         ,(fun 'set-_-looping '(if value 1 0))
+         value)
        
        (defmethod (setf min-max-distance) (value (,name ,class))
          (destructuring-bind (min max) value
-           ,(fun 'set-_-3d-min-max-distance 'min 'max)))
+           ,(fun 'set-_-3d-min-max-distance 'min 'max))
+         value)
        
        (defmethod (setf attenuation) (value (,name ,class))
          (destructuring-bind (model rolloff) value
-           ,(fun 'set-_-3d-attenuation 'model 'rolloff)))
+           ,(fun 'set-_-3d-attenuation 'model 'rolloff))
+         value)
        
        (defmethod (setf doppler-factor) (value (,name ,class))
-         ,(fun 'set-_-3d-doppler-factor 'value))
+         ,(fun 'set-_-3d-doppler-factor 'value)
+         value)
        
        (defmethod (setf 3d-processing) (value (,name ,class))
-         ,(fun 'set-_-3d-processing '(if value 1 0)))
+         ,(fun 'set-_-3d-processing '(if value 1 0))
+         value)
        
        (defmethod (setf listener-relative) (value (,name ,class))
-         ,(fun 'set-_-3d-listener-relative '(if value 1 0)))
+         ,(fun 'set-_-3d-listener-relative '(if value 1 0))
+         value)
        
        (defmethod (setf distance-delay) (value (,name ,class))
-         ,(fun 'set-_-3d-distance-delay '(if value 1 0)))
+         ,(fun 'set-_-3d-distance-delay '(if value 1 0))
+         value)
        
        (defmethod (setf collider) (value (,name ,class))
          (if (listp value)
              (destructuring-bind (collider user-data) value
                ,(fun 'set-_-3d-collider* '(handle collider) 'user-data))
-             ,(fun 'set-_-3d-collider '(handle value))))
+             ,(fun 'set-_-3d-collider '(handle value)))
+         value)
        
        (defmethod (setf attenuator) (value (,name ,class))
-         ,(fun 'set-_-3d-attenuator '(handle value)))
+         ,(fun 'set-_-3d-attenuator '(handle value))
+         value)
        
        (defmethod (setf inaudible-behavior) (value (,name ,class))
          (destructuring-bind (must-tick kill) value
-           ,(fun 'set-_-3d-inaudible-behavior '(if must-tick 1 0) '(if kill 1 0))))
+           ,(fun 'set-_-3d-inaudible-behavior '(if must-tick 1 0) '(if kill 1 0)))
+         value)
        
        (defmethod (setf filter) ((filter filter) (,name ,class) id)
          (check-type id (integer 0 #.cl-soloud-cffi:*max-filters*))
-         ,(fun 'set-_-filter 'id '(handle filter)))
+         ,(fun 'set-_-filter 'id '(handle filter))
+         value)
+
+       (defmethod (setf filter) ((null null) (,name ,class) id)
+         (check-type id (integer 0 #.cl-soloud-cffi:*max-filters*))
+         ,(fun 'set-_-filter 'id '(cffi:null-pointer))
+         value)
        
        (defmethod stop ((,name ,class))
          ,(fun 'stop-_)))))
 
 (define-internal-source wav-source wav)
 
-(defmethod load ((source wav-source) file)
+(defmethod load-file ((source wav-source) file)
   (cl-soloud-cffi:load-wav
    (handle source) (uiop:native-namestring file)))
 
@@ -89,7 +134,7 @@
 
 (define-internal-source wav-stream-source wav-stream)
 
-(defmethod load ((source wav-stream-source) file)
+(defmethod load-file ((source wav-stream-source) file)
   (cl-soloud-cffi:load-wav-stream
    (handle source) (uiop:native-namestring file)))
 
@@ -99,17 +144,17 @@
 
 (define-internal-source speech-source speech)
 
-(defmethod load ((source speech-source) text)
+(defmethod load-text ((source speech-source) text)
   (cl-soloud-cffi:set-speech-text
    (handle source) text))
 
 (define-internal-source sfxr-source sfxr)
 
-(defmethod load ((source sfxr-source) file)
+(defmethod load-file ((source sfxr-source) file)
   (cl-soloud-cffi:load-sfxr-params
    (handle source) (uiop:native-namestring file)))
 
-(defmethod load ((source sfxr-source) (preset symbol))
+(defmethod load-preset ((source sfxr-source) (preset symbol))
   (cl-soloud-cffi:load-sfxr-preset
    (handle source) preset (random (ash 1 (* 8 (cffi:foreign-type-size :int))))))
 
@@ -119,7 +164,7 @@
 
 (define-internal-source monotone-source monotone)
 
-(defmethod load ((source monotone-source) file)
+(defmethod load-file ((source monotone-source) file)
   (cl-soloud-cffi:load-monotone
    (handle source) (uiop:native-namestring file)))
 
@@ -129,7 +174,7 @@
 
 (define-internal-source ted-sid-source ted-sid)
 
-(defmethod load ((source ted-sid-source) file)
+(defmethod load-file ((source ted-sid-source) file)
   (cl-soloud-cffi:load-ted-sid
    (handle source) (uiop:native-namestring file)))
 

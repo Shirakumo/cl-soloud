@@ -406,7 +406,6 @@
 (defpackage #:cl-soloud
   (:nicknames #:org.shirakumo.fraf.soloud)
   (:use #:cl #:cffi)
-  (:shadow #:load)
   ;; filter.lisp
   (:export
    #:filter
@@ -458,6 +457,8 @@
   ;; source.lisp
   (:export
    #:source
+   #:add
+   #:withdraw
    #:collider
    #:attenuator
    #:volume
@@ -473,7 +474,9 @@
    #:inaudible-behavior
    #:filter
    #:stop
-   #:load
+   #:load-file
+   #:load-text
+   #:load-preset
    #:load-mem
    #:wav-source
    #:wav-stream-source

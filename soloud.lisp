@@ -9,7 +9,7 @@
 (defclass soloud (c-backed-object)
   ())
 
-(defclass playback (c-backed-object)
+(defclass playback ()
   ((handle :initarg :handle)
    (soloud :initarg :soloud :initform NIL :accessor soloud)))
 

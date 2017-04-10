@@ -20,7 +20,8 @@
                (:file "source")
                (:file "soloud")
                (:file "documentation"))
-  :depends-on (:cffi
+  :depends-on (:alexandria
+               :cffi
                :trivial-features
                :trivial-garbage
                :documentation-utils))
