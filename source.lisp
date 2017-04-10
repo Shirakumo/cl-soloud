@@ -137,10 +137,10 @@
   (cl-soloud-cffi:load-ted-sid-mem*
    (handle source) pointer length (if copy 1 0) (if take-ownership 1 0)))
 
-(define-internal-source virtual-audio-source)
+(define-internal-source virtual-source virtual-audio-source)
 
 (defmacro define-source (name direct-superclasses direct-slots &body options)
-  `(defclass ,name (,@direct-superclasses virtual-audio-source)
+  `(defclass ,name (,@direct-superclasses virtual-source)
      ,direct-slots ,@options))
 
 (defgeneric get-audio (audio-source buffer samples))
@@ -179,13 +179,13 @@
 
 (cl-soloud-cffi:set-virtual-audio-source-get-info (cffi:callback audio-source-get-info))
 
-(defclass virtual-audio-collider (audio-collider)
+(defclass virtual-collider (collider)
   ())
 
-(defmethod create-handle ((virtual-audio-collider virtual-audio-collider))
+(defmethod create-handle ((virtual-collider virtual-collider))
   (cl-soloud-cffi:create-virtual-audio-collider))
 
-(defmethod destroy-handle ((virtual-audio-collider virtual-audio-collider) handle)
+(defmethod destroy-handle ((virtual-collider virtual-collider) handle)
   (lambda () (cl-soloud-cffi:destroy-virtual-audio-collider handle)))
 
 (defgeneric collide (collider soloud 3d-data user-data))
@@ -196,13 +196,13 @@
 
 (cl-soloud-cffi:set-virtual-audio-collider-collide (cffi:callback audio-collider-collide))
 
-(defclass virtual-audio-attenuator (audio-attenuator)
+(defclass virtual-attenuator (attenuator)
   ())
 
-(defmethod create-handle ((virtual-audio-attenuator virtual-audio-attenuator))
+(defmethod create-handle ((virtual-attenuator virtual-attenuator))
   (cl-soloud-cffi:create-virtual-audio-attenuator))
 
-(defmethod destroy-handle ((virtual-audio-attenuator virtual-audio-attenuator) handle)
+(defmethod destroy-handle ((virtual-attenuator virtual-attenuator) handle)
   (lambda () (cl-soloud-cffi:destroy-virtual-audio-attenuator handle)))
 
 (defgeneric attenuate (attenuator distance min-distance max-distance rolloff-factor))

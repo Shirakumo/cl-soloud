@@ -409,6 +409,7 @@
   (:shadow #:load)
   ;; filter.lisp
   (:export
+   #:filter
    #:set-parameters
    #:biquad-resonant-filter
    #:echo-filter
@@ -424,10 +425,6 @@
   ;; soloud.lisp
   (:export
    #:soloud
-   #:source
-   #:filter
-   #:collider
-   #:attenuator
    #:playback
    #:soloud
    #:backend
@@ -460,6 +457,9 @@
    #:add)
   ;; source.lisp
   (:export
+   #:source
+   #:collider
+   #:attenuator
    #:volume
    #:looping
    #:min-max-distance
@@ -488,9 +488,9 @@
    #:seek-to
    #:rewind
    #:get-info
-   #:virtual-audio-collider
+   #:virtual-collider
    #:collide
-   #:virtual-audio-attenuator
+   #:virtual-attenuator
    #:attenuate)
   ;; toolkit.lisp
   (:export
