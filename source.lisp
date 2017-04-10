@@ -137,7 +137,7 @@
   (cl-soloud-cffi:load-ted-sid-mem*
    (handle source) pointer length (if copy 1 0) (if take-ownership 1 0)))
 
-(define-internal-source virtual-audio-source virtual-audio (c-tracked-object))
+(define-internal-source virtual-audio-source virtual-audio)
 
 (defmacro define-source (name direct-superclasses direct-slots &body options)
   `(defclass ,name (,@direct-superclasses virtual-audio-source)
@@ -178,3 +178,37 @@
     (get-info instance info-key)))
 
 (cl-soloud-cffi:set-virtual-audio-source-get-info (cffi:callback audio-source-get-info))
+
+(defclass virtual-audio-collider (audio-collider)
+  ())
+
+(defmethod create-handle ((virtual-audio-collider virtual-audio-collider))
+  (cl-soloud-cffi:create-virtual-audio-collider))
+
+(defmethod destroy-handle ((virtual-audio-collider virtual-audio-collider) handle)
+  (lambda () (cl-soloud-cffi:destroy-virtual-audio-collider handle)))
+
+(defgeneric collide (collider soloud 3d-data user-data))
+
+(cffi:defcallback audio-collider-collide :void ((instance :pointer) (soloud :pointer) (3d-data :pointer) (user-data :int))
+  (with-callback-handling (instance)
+    (collide instance (pointer->object soloud) 3d-data user-data)))
+
+(cl-soloud-cffi:set-virtual-audio-collider-collide (cffi:callback audio-collider-collide))
+
+(defclass virtual-audio-attenuator (audio-attenuator)
+  ())
+
+(defmethod create-handle ((virtual-audio-attenuator virtual-audio-attenuator))
+  (cl-soloud-cffi:create-virtual-audio-attenuator))
+
+(defmethod destroy-handle ((virtual-audio-attenuator virtual-audio-attenuator) handle)
+  (lambda () (cl-soloud-cffi:destroy-virtual-audio-attenuator handle)))
+
+(defgeneric attenuate (attenuator distance min-distance max-distance rolloff-factor))
+
+(cffi:defcallback audio-attenuator-attenuate :void ((instance :pointer) (distance :float) (min-distance :float) (max-distance :float) (rolloff-factor :float))
+  (with-callback-handling (instance)
+    (attenuate instance distance min-distance max-distance rolloff-factor)))
+
+(cl-soloud-cffi:set-virtual-audio-attenuator-attenuate (cffi:callback audio-attenuator-attenuate))

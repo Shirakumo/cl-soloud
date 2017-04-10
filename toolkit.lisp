@@ -16,14 +16,8 @@
     (when (cffi:null-pointer-p handle)
       (error "Failed to create ~a handle." c-backed-object))
     (setf (handle soloud) handle)
-    (tg:finalize handle (destroy-handle c-backed-object handle))))
-
-(defclass c-tracked-object (c-backed-object)
-  ())
-
-(defmethod initialize-instance :around ((object c-tracked-object) &key)
-  (call-next-method)
-  (setf (gethash (cffi:pointer-address (handle object)) *c-object-table*) object))
+    (tg:finalize handle (destroy-handle c-backed-object handle))
+    (setf (gethash (cffi:pointer-address (handle object)) *c-object-table*) object)))
 
 (defmethod pointer->object ((pointer integer))
   (gethash integer *c-object-table*))

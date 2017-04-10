@@ -95,7 +95,7 @@
   (cl-soloud-cffi:set-bass-boost-filter-params
    (handle filter) boost))
 
-(defclass virtual-filter (filter c-tracked-object)
+(defclass virtual-filter (filter)
   ())
 
 (defmethod create-handle ((virtual-filter virtual-filter))

@@ -416,11 +416,13 @@
    #:flanger-filter
    #:dc-removal-filter
    #:fft-filter
-   #:bass-boost-filter)
+   #:bass-boost-filter
+   #:virtual-filter
+   #:define-filter
+   #:filter
+   #:filter-channel)
   ;; soloud.lisp
   (:export
-   #:c-backed-object
-   #:handle
    #:soloud
    #:source
    #:filter
@@ -478,4 +480,20 @@
    #:speech-source
    #:sfxr-source
    #:monotone-source
-   #:ted-sid-source))
+   #:ted-sid-source
+   #:virtual-audio-source
+   #:define-source
+   #:get-audio
+   #:has-ended
+   #:seek-to
+   #:rewind
+   #:get-info
+   #:virtual-audio-collider
+   #:collide
+   #:virtual-audio-attenuator
+   #:attenuate)
+  ;; toolkit.lisp
+  (:export
+   #:c-backed-object
+   #:handle
+   #:pointer->object))
