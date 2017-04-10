@@ -107,10 +107,6 @@
 (defmethod destroy-handle ((virtual-filter virtual-filter) handle)
   (lambda () (cl-soloud-cffi:destroy-virtual-filter handle)))
 
-(defmacro define-filter (name direct-superclasses direct-slots &body options)
-  `(defclass ,name (,@direct-superclasses virtual-filter)
-     ,direct-slots ,@options))
-
 (defgeneric filter (filter samples channels samplerate time))
 (defgeneric filter-channel (filter buffer channel samples channels samplerate time))
 

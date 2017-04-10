@@ -406,6 +406,11 @@
 (defpackage #:cl-soloud
   (:nicknames #:org.shirakumo.fraf.soloud)
   (:use #:cl #:cffi)
+  ;; bus.lisp
+  (:export
+   #:bus
+   #:soloud
+   #:play)
   ;; filter.lisp
   (:export
    #:filter
@@ -418,7 +423,6 @@
    #:fft-filter
    #:bass-boost-filter
    #:virtual-filter
-   #:define-filter
    #:filter
    #:filter-channel)
   ;; soloud.lisp
@@ -485,7 +489,6 @@
    #:monotone-source
    #:ted-sid-source
    #:virtual-audio-source
-   #:define-source
    #:get-audio
    #:has-ended
    #:seek-to

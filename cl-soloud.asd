@@ -19,9 +19,11 @@
                (:file "filter")
                (:file "source")
                (:file "soloud")
+               (:file "bus")
                (:file "documentation"))
   :depends-on (:alexandria
                :cffi
                :trivial-features
                :trivial-garbage
+               :trivial-indent
                :documentation-utils))

@@ -28,6 +28,7 @@
     (cl-soloud-cffi:destroy handle)))
 
 (defmethod initialize-instance :after ((soloud soloud) &key (flags '(:clip-roundoff)) (backend :auto) sample-rate buffer-size channels)
+  ;; FIXME: detect init fail
   (cl-soloud-cffi:init* (handle soloud) (compute-flags flags) backend (or sample-rate 0) (or buffer-size 0) (or channels 2)))
 
 (defmethod backend ((soloud soloud))
@@ -43,7 +44,9 @@
     (check-type channel (integer 0))
     (cl-soloud-cffi:set-speaker-position (handle soloud) channel x y z)))
 
-(defmethod play ((soloud soloud) (source source) &key (volume 1.0) (pan 0.0) paused (bus 0) delay location velocity)
+(defgeneric play (source target &key volume pan paused delay location velocity &allow-other-keys))
+
+(defmethod play ((source source) (soloud soloud) &key (volume 1.0) (pan 0.0) paused delay location velocity (bus 0))
   (check-type volume (float 0.0 1.0))
   (check-type pan (float -1.0 1.0))
   (let ((paused (if paused 1 0)))

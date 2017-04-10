@@ -9,20 +9,6 @@
 (defclass source (c-backed-object)
   ((filter-map :initform (make-hash-table :test 'eql) :accessor filter-map)))
 
-;; Not great that we have to dupe this information here, but I don't want
-;; to explode the C api any more than it already has been.
-(defmethod filters ((source source))
-  (alexandria:hash-table-values (filter-map source)))
-
-(defmethod filter ((source source) index)
-  (gethash index (filter-map source)))
-
-(defmethod (setf filter) :after ((filter filter) (source source) index)
-  (setf (gethash index (filter-map source)) filter))
-
-(defmethod (setf filter) :after ((null null) (source source) index)
-  (remhash index (filter-map source)))
-
 (defmethod add ((filter filter) (source source))
   (let ((taken (alexandria:hash-table-keys (filter-map source)))
         (all (loop for i from 0 below #.cl-soloud-cffi:*max-filters* collect i)))
@@ -43,86 +29,91 @@
 (defclass attenuator (c-backed-object)
   ())
 
-(defmacro define-internal-source (class &optional (name class) superclasses)
-  (flet ((fun (symb &rest args)
-           (list* (or (find-cffi-symbol symb name)
-                      (error "No such symbol ~a for ~a" symb name))
-                  `(handle ,name)
-                  args)))
-    `(progn
-       (defclass ,class (,@superclasses source)
-         ())
+(defmacro define-internal-source (class direct-superclasses direct-slots &rest options)
+  (destructuring-bind (class &optional (name class))
+      (alexandria:ensure-list class)
+    (flet ((fun (symb &rest args)
+             (list* (or (find-cffi-symbol symb name)
+                        (error "No such symbol ~a for ~a" symb name))
+                    `(handle ,name)
+                    args)))
+      `(progn
+         (defclass ,class (,@direct-superclasses source)
+           ,direct-slots ,@options)
 
-       (defmethod create-handle ((,name ,class))
-         ,(fun 'create-_))
+         (defmethod create-handle ((,name ,class))
+           ,(fun 'create-_))
 
-       (defmethod destroy-handle ((,name ,class) handle)
-         (lambda () ,(fun 'destroy-_ 'handle)))
-       
-       (defmethod (setf volume) (value (,name ,class) &key fade)
-         ,(fun 'set-_-volume 'value)
-         value)
-       
-       (defmethod (setf looping) (value (,name ,class))
-         ,(fun 'set-_-looping '(if value 1 0))
-         value)
-       
-       (defmethod (setf min-max-distance) (value (,name ,class))
-         (destructuring-bind (min max) value
-           ,(fun 'set-_-3d-min-max-distance 'min 'max))
-         value)
-       
-       (defmethod (setf attenuation) (value (,name ,class))
-         (destructuring-bind (model rolloff) value
-           ,(fun 'set-_-3d-attenuation 'model 'rolloff))
-         value)
-       
-       (defmethod (setf doppler-factor) (value (,name ,class))
-         ,(fun 'set-_-3d-doppler-factor 'value)
-         value)
-       
-       (defmethod (setf 3d-processing) (value (,name ,class))
-         ,(fun 'set-_-3d-processing '(if value 1 0))
-         value)
-       
-       (defmethod (setf listener-relative) (value (,name ,class))
-         ,(fun 'set-_-3d-listener-relative '(if value 1 0))
-         value)
-       
-       (defmethod (setf distance-delay) (value (,name ,class))
-         ,(fun 'set-_-3d-distance-delay '(if value 1 0))
-         value)
-       
-       (defmethod (setf collider) (value (,name ,class))
-         (if (listp value)
-             (destructuring-bind (collider user-data) value
-               ,(fun 'set-_-3d-collider* '(handle collider) 'user-data))
-             ,(fun 'set-_-3d-collider '(handle value)))
-         value)
-       
-       (defmethod (setf attenuator) (value (,name ,class))
-         ,(fun 'set-_-3d-attenuator '(handle value))
-         value)
-       
-       (defmethod (setf inaudible-behavior) (value (,name ,class))
-         (destructuring-bind (must-tick kill) value
-           ,(fun 'set-_-3d-inaudible-behavior '(if must-tick 1 0) '(if kill 1 0)))
-         value)
-       
-       (defmethod (setf filter) ((filter filter) (,name ,class) id)
-         (check-type id (integer 0 #.cl-soloud-cffi:*max-filters*))
-         ,(fun 'set-_-filter 'id '(handle filter))
-         value)
+         (defmethod destroy-handle ((,name ,class) handle)
+           (lambda () ,(fun 'destroy-_ 'handle)))
+         
+         (defmethod (setf volume) (value (,name ,class) &key fade)
+           ,(fun 'set-_-volume 'value)
+           value)
+         
+         (defmethod (setf looping) (value (,name ,class))
+           ,(fun 'set-_-looping '(if value 1 0))
+           value)
+         
+         (defmethod (setf min-max-distance) (value (,name ,class))
+           (destructuring-bind (min max) value
+             ,(fun 'set-_-3d-min-max-distance 'min 'max))
+           value)
+         
+         (defmethod (setf attenuation) (value (,name ,class))
+           (destructuring-bind (model rolloff) value
+             ,(fun 'set-_-3d-attenuation 'model 'rolloff))
+           value)
+         
+         (defmethod (setf doppler-factor) (value (,name ,class))
+           ,(fun 'set-_-3d-doppler-factor 'value)
+           value)
+         
+         (defmethod (setf 3d-processing) (value (,name ,class))
+           ,(fun 'set-_-3d-processing '(if value 1 0))
+           value)
+         
+         (defmethod (setf listener-relative) (value (,name ,class))
+           ,(fun 'set-_-3d-listener-relative '(if value 1 0))
+           value)
+         
+         (defmethod (setf distance-delay) (value (,name ,class))
+           ,(fun 'set-_-3d-distance-delay '(if value 1 0))
+           value)
+         
+         (defmethod (setf collider) (value (,name ,class))
+           (if (listp value)
+               (destructuring-bind (collider user-data) value
+                 ,(fun 'set-_-3d-collider* '(handle collider) 'user-data))
+               ,(fun 'set-_-3d-collider '(handle value)))
+           value)
+         
+         (defmethod (setf attenuator) (value (,name ,class))
+           ,(fun 'set-_-3d-attenuator '(handle value))
+           value)
+         
+         (defmethod (setf inaudible-behavior) (value (,name ,class))
+           (destructuring-bind (must-tick kill) value
+             ,(fun 'set-_-3d-inaudible-behavior '(if must-tick 1 0) '(if kill 1 0)))
+           value)
+         
+         (defmethod (setf filter) ((filter filter) (,name ,class) id)
+           (check-type id (integer 0 #.cl-soloud-cffi:*max-filters*))
+           ,(fun 'set-_-filter 'id '(handle filter))
+           value)
 
-       (defmethod (setf filter) ((null null) (,name ,class) id)
-         (check-type id (integer 0 #.cl-soloud-cffi:*max-filters*))
-         ,(fun 'set-_-filter 'id '(cffi:null-pointer))
-         value)
-       
-       (defmethod stop ((,name ,class))
-         ,(fun 'stop-_)))))
+         (defmethod (setf filter) ((null null) (,name ,class) id)
+           (check-type id (integer 0 #.cl-soloud-cffi:*max-filters*))
+           ,(fun 'set-_-filter 'id '(cffi:null-pointer))
+           value)
+         
+         (defmethod stop ((,name ,class))
+           ,(fun 'stop-_))))))
 
-(define-internal-source wav-source wav)
+(trivial-indent:define-indentation define-internal-source (6 4 &rest 2))
+
+(define-internal-source (wav-source wav) ()
+  ())
 
 (defmethod load-file ((source wav-source) file)
   (cl-soloud-cffi:load-wav
@@ -132,7 +123,8 @@
   (cl-soloud-cffi:load-wav-mem*
    (handle source) pointer length (if copy 1 0) (if take-ownership 1 0)))
 
-(define-internal-source wav-stream-source wav-stream)
+(define-internal-source (wav-stream-source wav-stream) ()
+  ())
 
 (defmethod load-file ((source wav-stream-source) file)
   (cl-soloud-cffi:load-wav-stream
@@ -142,13 +134,15 @@
   (cl-soloud-cffi:load-wav-stream-mem*
    (handle source) pointer length (if copy 1 0) (if take-ownership 1 0)))
 
-(define-internal-source speech-source speech)
+(define-internal-source (speech-source speech) ()
+  ())
 
 (defmethod load-text ((source speech-source) text)
   (cl-soloud-cffi:set-speech-text
    (handle source) text))
 
-(define-internal-source sfxr-source sfxr)
+(define-internal-source (sfxr-source sfxr) ()
+  ())
 
 (defmethod load-file ((source sfxr-source) file)
   (cl-soloud-cffi:load-sfxr-params
@@ -162,7 +156,8 @@
   (cl-soloud-cffi:load-sfxr-params-mem*
    (handle source) pointer length (if copy 1 0) (if take-ownership 1 0)))
 
-(define-internal-source monotone-source monotone)
+(define-internal-source (monotone-source monotone) ()
+  ())
 
 (defmethod load-file ((source monotone-source) file)
   (cl-soloud-cffi:load-monotone
@@ -172,7 +167,8 @@
   (cl-soloud-cffi:load-monotone-mem*
    (handle source) pointer length (if copy 1 0) (if take-ownership 1 0)))
 
-(define-internal-source ted-sid-source ted-sid)
+(define-internal-source (ted-sid-source ted-sid) ()
+  ())
 
 (defmethod load-file ((source ted-sid-source) file)
   (cl-soloud-cffi:load-ted-sid
@@ -182,11 +178,8 @@
   (cl-soloud-cffi:load-ted-sid-mem*
    (handle source) pointer length (if copy 1 0) (if take-ownership 1 0)))
 
-(define-internal-source virtual-source virtual-audio-source)
-
-(defmacro define-source (name direct-superclasses direct-slots &body options)
-  `(defclass ,name (,@direct-superclasses virtual-source)
-     ,direct-slots ,@options))
+(define-internal-source (virtual-source virtual-audio-source) ()
+  ())
 
 (defgeneric get-audio (audio-source buffer samples))
 (defgeneric has-ended (audio-source))
