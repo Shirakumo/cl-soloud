@@ -54,9 +54,6 @@
   (when (<= cl-soloud-cffi:*max-sources* (playback-count soloud))
     (error "Cannot play source: reached maximum number of total playbacks (~d)"
            cl-soloud-cffi:*max-sources*))
-  (when (and (not paused) (<= (max-active-playback-count soloud) (active-playback-count soloud)))
-    (error "Cannot play source: reached maximum number of active playbacks (~d)"
-           (max-active-playback-count soloud)))
   (let ((paused (if paused 1 0)))
     (make-instance
      'playback
@@ -146,9 +143,6 @@
     ((eql T)
      (cl-soloud-cffi:set-pause (handle (soloud playback)) (handle playback) 1))
     ((eql NIL)
-     (when (<= (max-active-playback-count soloud) (active-playback-count soloud))
-       (error "Cannot unpause: reached maximum number of active playbacks (~d)"
-              (max-active-playback-count soloud)))
      (cl-soloud-cffi:set-pause (handle (soloud playback)) (handle playback) 0))))
 
 (defmethod stop ((playback playback))
@@ -276,6 +270,14 @@
 (defmethod (setf filter-parameter) (value (playback playback) filter attribute)
   (check-type filter (integer 0 #.(1- cl-soloud-cffi:*max-filters*)))
   (cl-soloud-cffi:set-filter-parameter (handle (soloud playback)) (handle playback) filter attribute value))
+
+(defmethod (setf inaudible-behavior) (value (playback playback))
+  (destructuring-bind (tick-inaudible kill-inaudible) value
+    (cl-soloud-cffi:set-inaudible-behavior (handle (soloud playback)) (handle playback)
+                                           (if tick-inaudible 1 0) (if kill-inaudible 1 0))))
+
+(defmethod playing ((soloud soloud))
+  (< 0 (active-playback-count soloud)))
 
 (defclass group (playback)
   ())

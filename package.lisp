@@ -460,6 +460,7 @@
    #:attenuation
    #:doppler-factor
    #:filter-parameter
+   #:playing
    #:group
    #:add)
   ;; source.lisp
