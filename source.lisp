@@ -33,8 +33,7 @@
   (destructuring-bind (class &optional (name class))
       (alexandria:ensure-list class)
     (flet ((fun (symb &rest args)
-             (list* (or (find-cffi-symbol symb name)
-                        (error "No such symbol ~a for ~a" symb name))
+             (list* (find-cffi-symbol symb name)
                     `(handle ,name)
                     args)))
       `(progn
@@ -42,10 +41,10 @@
            ,direct-slots ,@options)
 
          (defmethod create-handle ((,name ,class))
-           ,(fun 'create-_))
+           (,(find-cffi-symbol 'create-_ name)))
 
          (defmethod destroy-handle ((,name ,class) handle)
-           (lambda () ,(fun 'destroy-_ 'handle)))
+           (lambda () (,(find-cffi-symbol 'destroy-_ name) handle)))
          
          (defmethod (setf volume) (value (,name ,class) &key fade)
            ,(fun 'set-_-volume 'value)
