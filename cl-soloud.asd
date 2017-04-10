@@ -15,6 +15,7 @@
   :serial T
   :components ((:file "package")
                (:file "low-level")
+               (:file "toolkit")
                (:file "soloud")
                (:file "source")
                (:file "filter")

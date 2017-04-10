@@ -6,9 +6,6 @@
 
 (in-package #:org.shirakumo.fraf.soloud)
 
-(defclass c-backed-object ()
-  ((handle :initform NIL :accessor handle)))
-
 (defclass soloud (c-backed-object) ())
 
 (defclass source (c-backed-object) ())
@@ -29,16 +26,16 @@
       (setf int (logior int (cffi:foreign-enum-value
                              'cl-soloud-cffi:soloud-flag flag))))))
 
+(defmethod create-handle ((soloud soloud))
+  (cl-soloud-cffi:create))
+
+(defmethod destroy-handle ((soloud soloud) handle)
+  (lambda ()
+    (cl-soloud-cffi:deinit handle)
+    (cl-soloud-cffi:destroy handle)))
+
 (defmethod initialize-instance :after ((soloud soloud) &key (flags '(:clip-roundoff)) (backend :auto) sample-rate buffer-size channels)
-  (let ((flags (compute-flags flags))
-        (handle (cl-soloud-cffi:create)))
-    (when (cffi:null-pointer-p handle)
-      (error "Failed to create SoLoud handle."))
-    (cl-soloud-cffi:init* handle flags backend (or sample-rate 0) (or buffer-size 0) (or channels 2))
-    (setf (handle soloud) handle)
-    (tg:finalize handle (lambda ()
-                          (cl-soloud-cffi:deinit handle)
-                          (cl-soloud-cffi:destroy handle)))))
+  (cl-soloud-cffi:init* (handle soloud) (compute-flags flags) backend (or sample-rate 0) (or buffer-size 0) (or channels 2)))
 
 (defmethod backend ((soloud soloud))
   (values
@@ -270,6 +267,7 @@
 (defclass group (playback)
   ())
 
+;; FIXME
 (defmethod initialize-instance :after ((group group) &key soloud)
   (let ((handle (cl-soloud-cffi:create-voice-group (handle soloud))))
     (when (<= handle 0)

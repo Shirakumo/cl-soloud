@@ -15,15 +15,21 @@
                                 (write-char c o))))
                  '#:org.shirakumo.fraf.soloud.cffi)))
 
-(defmacro define-source (class &optional (name class))
+(defmacro define-internal-source (class &optional (name class) superclasses)
   (flet ((fun (symb &rest args)
            (list* (or (find-cffi-symbol symb name)
                       (error "No such symbol ~a for ~a" symb name))
                   `(handle ,name)
                   args)))
     `(progn
-       (defclass ,class (source)
+       (defclass ,class (,@superclasses source)
          ())
+
+       (defmethod create-handle ((,name ,class))
+         ,(fun 'create-_))
+
+       (defmethod destroy-handle ((,name ,class) handle)
+         (lambda () ,(fun 'destroy-_ 'handle)))
        
        (defmethod (setf volume) (value (,name ,class) &key fade)
          ,(fun 'set-_-volume 'value))
@@ -71,7 +77,7 @@
        (defmethod stop ((,name ,class))
          ,(fun 'stop-_)))))
 
-(define-source wav-source wav)
+(define-internal-source wav-source wav)
 
 (defmethod load ((source wav-source) file)
   (cl-soloud-cffi:load-wav
@@ -81,7 +87,7 @@
   (cl-soloud-cffi:load-wav-mem*
    (handle source) pointer length (if copy 1 0) (if take-ownership 1 0)))
 
-(define-source wav-stream-source wav-stream)
+(define-internal-source wav-stream-source wav-stream)
 
 (defmethod load ((source wav-stream-source) file)
   (cl-soloud-cffi:load-wav-stream
@@ -91,13 +97,13 @@
   (cl-soloud-cffi:load-wav-stream-mem*
    (handle source) pointer length (if copy 1 0) (if take-ownership 1 0)))
 
-(define-source speech-source speech)
+(define-internal-source speech-source speech)
 
 (defmethod load ((source speech-source) text)
   (cl-soloud-cffi:set-speech-text
    (handle source) text))
 
-(define-source sfxr-source sfxr)
+(define-internal-source sfxr-source sfxr)
 
 (defmethod load ((source sfxr-source) file)
   (cl-soloud-cffi:load-sfxr-params
@@ -111,7 +117,7 @@
   (cl-soloud-cffi:load-sfxr-params-mem*
    (handle source) pointer length (if copy 1 0) (if take-ownership 1 0)))
 
-(define-source monotone-source monotone)
+(define-internal-source monotone-source monotone)
 
 (defmethod load ((source monotone-source) file)
   (cl-soloud-cffi:load-monotone
@@ -121,7 +127,7 @@
   (cl-soloud-cffi:load-monotone-mem*
    (handle source) pointer length (if copy 1 0) (if take-ownership 1 0)))
 
-(define-source ted-sid-source ted-sid)
+(define-internal-source ted-sid-source ted-sid)
 
 (defmethod load ((source ted-sid-source) file)
   (cl-soloud-cffi:load-ted-sid
@@ -131,4 +137,44 @@
   (cl-soloud-cffi:load-ted-sid-mem*
    (handle source) pointer length (if copy 1 0) (if take-ownership 1 0)))
 
+(define-internal-source virtual-audio-source virtual-audio (c-tracked-object))
 
+(defmacro define-source (name direct-superclasses direct-slots &body options)
+  `(defclass ,name (,@direct-superclasses virtual-audio-source)
+     ,direct-slots ,@options))
+
+(defgeneric get-audio (audio-source buffer samples))
+(defgeneric has-ended (audio-source))
+(defgeneric seek-to (audio-source time scratch size))
+(defgeneric rewind (audio-source))
+(defgeneric get-info (audio-source info-key))
+
+(cffi:defcallback audio-source-get-audio :void ((instance :pointer) (buffer :pointer) (samples :uint))
+  (with-callback-handling (instance)
+    (get-audio instance buffer samples)))
+
+(cl-soloud-cffi:set-virtual-audio-source-get-audio (cffi:callback audio-source-get-audio))
+
+(cffi:defcallback audio-source-has-ended :void ((instance :pointer))
+  (with-callback-handling (instance 1)
+    (if (has-ended instance) 1 0)))
+
+(cl-soloud-cffi:set-virtual-audio-source-has-ended (cffi:callback audio-source-has-ended))
+
+(cffi:defcallback audio-source-seek :void ((instance :pointer) (time :float) (scratch :pointer) (size :uint))
+  (with-callback-handling (instance)
+    (seek-to instance time scratch size)))
+
+(cl-soloud-cffi:set-virtual-audio-source-seek (cffi:callback audio-source-seek))
+
+(cffi:defcallback audio-source-rewind :void ((instance :pointer))
+  (with-callback-handling (instance)
+    (rewind instance)))
+
+(cl-soloud-cffi:set-virtual-audio-source-rewind (cffi:callback audio-source-rewind))
+
+(cffi:defcallback audio-source-get-info :void ((instance :pointer) (info-key :uint))
+  (with-callback-handling (instance 0.0)
+    (get-info instance info-key)))
+
+(cl-soloud-cffi:set-virtual-audio-source-get-info (cffi:callback audio-source-get-info))
