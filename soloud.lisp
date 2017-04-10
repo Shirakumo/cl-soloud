@@ -11,7 +11,8 @@
 
 (defclass playback ()
   ((handle :initarg :handle)
-   (soloud :initarg :soloud :initform NIL :accessor soloud)))
+   (soloud :initarg :soloud :initform NIL :accessor soloud)
+   (source :initarg :source :initform NIL :accessor source)))
 
 (defun compute-flags (flags)
   (let ((int 0))
@@ -58,6 +59,7 @@
     (make-instance
      'playback
      :soloud soloud
+     :source source
      :handle (cond ((and delay location)
                     (destructuring-bind (x y z) location
                       (destructuring-bind (&optional (vx 0.0) (vy 0.0) (vz 0.0)) velocity

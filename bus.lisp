@@ -40,6 +40,7 @@
     (make-instance
      'playback
      :soloud bus
+     :source source
      :handle (cond ((and delay location)
                     (destructuring-bind (x y z) location
                       (destructuring-bind (&optional (vx 0.0) (vy 0.0) (vz 0.0)) velocity

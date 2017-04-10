@@ -16,8 +16,7 @@ Next you'll want to get an audio source to play back from. The simplest would be
 
     (let ((source (make-instance 'cl-soloud:speech-source)))
       (cl-soloud:load-text source "Whoa, Text To Speech!")
-      (cl-soloud:play source *s*)
-      (loop while (cl-soloud:playing *s*) do (sleep 0.1)))
+      (cl-soloud:play source *s*))
 
 Returned by `play` is a playback handle with which you can control the playback. Note that all the objects returned by this API will take care of automatically cleaning up the underlying resources when they are finalized. This means that you must keep a reference to your SoLoud object and sources around or things will randomly stop working.
 
