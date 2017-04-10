@@ -11,6 +11,7 @@
 (pushnew *static* cffi:*foreign-library-directories*)
 
 (defvar *max-filters* 4)
+(defvar *max-sources* 1024)
 
 (define-foreign-library libsoloud
   (:darwin (:or "libsoloud.dylib" "libsoloud.so"
@@ -251,10 +252,6 @@
   (soloud soloud)
   (voice-handle :uint))
 
-(defcfun (get-active-voice-count "Soloud_getActiveVoiceCount") :uint
-  (soloud soloud)
-  (voice-handle :uint))
-
 (defcfun (is-valid-voice-handle "Soloud_isValidVoiceHandle") :int
   (soloud soloud)
   (voice-handle :uint))
@@ -273,6 +270,9 @@
   (soloud soloud))
 
 (defcfun (get-voice-count "Soloud_getVoiceCount") :uint
+  (soloud soloud))
+
+(defcfun (get-active-voice-count "Soloud_getActiveVoiceCount") :uint
   (soloud soloud))
 
 (defcfun (get-looping "Soloud_getLooping") :int

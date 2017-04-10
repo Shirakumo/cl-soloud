@@ -13,6 +13,7 @@
   (:export
    #:*static*
    #:*max-filters*
+   #:*max-sources*
    #:libsoloud
    ;; SoLoud
    #:soloud
@@ -445,6 +446,7 @@
    #:protected
    #:max-active-playback-count
    #:active-playback-count
+   #:playback-count
    #:sample-rate
    #:oscillate-volume
    #:oscillate-pan

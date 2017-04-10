@@ -27,9 +27,11 @@
     (cl-soloud-cffi:deinit handle)
     (cl-soloud-cffi:destroy handle)))
 
-(defmethod initialize-instance :after ((soloud soloud) &key (flags '(:clip-roundoff)) (backend :auto) sample-rate buffer-size channels)
+(defmethod initialize-instance :after ((soloud soloud) &key (flags '(:clip-roundoff)) (backend :auto) sample-rate buffer-size channels
+                                                            (max-active-playback-count 16))
   ;; FIXME: detect init fail
-  (cl-soloud-cffi:init* (handle soloud) (compute-flags flags) backend (or sample-rate 0) (or buffer-size 0) (or channels 2)))
+  (cl-soloud-cffi:init* (handle soloud) (compute-flags flags) backend (or sample-rate 0) (or buffer-size 0) (or channels 2))
+  (cl-soloud-cffi:set-max-active-voice-count (handle soloud) max-active-playback-count))
 
 (defmethod backend ((soloud soloud))
   (values
@@ -49,8 +51,11 @@
 (defmethod play ((source source) (soloud soloud) &key (volume 1.0) (pan 0.0) paused delay location velocity (bus 0))
   (check-type volume (float 0.0 1.0))
   (check-type pan (float -1.0 1.0))
-  (when (<= (max-active-playback-count soloud) (active-playback-count soloud))
-    (error "Reached maximum number of playbacks (~d)"
+  (when (<= cl-soloud-cffi:*max-sources* (playback-count soloud))
+    (error "Cannot play source: reached maximum number of total playbacks (~d)"
+           cl-soloud-cffi:*max-sources*))
+  (when (and (not paused) (<= (max-active-playback-count soloud) (active-playback-count soloud)))
+    (error "Cannot play source: reached maximum number of active playbacks (~d)"
            (max-active-playback-count soloud)))
   (let ((paused (if paused 1 0)))
     (make-instance
@@ -141,7 +146,10 @@
     ((eql T)
      (cl-soloud-cffi:set-pause (handle (soloud playback)) (handle playback) 1))
     ((eql NIL)
-     (cl-soloud-cffi:set-pause (handle (soloud playback)) (handle playback) 1))))
+     (when (<= (max-active-playback-count soloud) (active-playback-count soloud))
+       (error "Cannot unpause: reached maximum number of active playbacks (~d)"
+              (max-active-playback-count soloud)))
+     (cl-soloud-cffi:set-pause (handle (soloud playback)) (handle playback) 0))))
 
 (defmethod stop ((playback playback))
   (cl-soloud-cffi:stop (handle (soloud playback)) (handle playback)))
@@ -175,6 +183,9 @@
   (cl-soloud-cffi:set-max-active-voice-count (handle soloud) count))
 
 (defmethod active-playback-count ((soloud soloud))
+  (cl-soloud-cffi:get-active-voice-count (handle soloud)))
+
+(defmethod playback-count ((soloud soloud))
   (cl-soloud-cffi:get-voice-count (handle soloud)))
 
 (defmethod sample-rate ((playback playback))
