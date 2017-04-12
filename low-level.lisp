@@ -35,6 +35,16 @@
 (defctype file :pointer)
 (defctype filter :pointer)
 
+(defcenum soloud-error
+  (:no-error              0)
+  (:invalid-parameter     1)
+  (:file-not-found        2)
+  (:file-load-failed      3)
+  (:dll-not-found         4)
+  (:out-of-memory         5)
+  (:not-implemented       6)
+  (:unknown-error         7))
+
 (defcenum soloud-backend
   (:auto                  0)
   (:sdl                   1)

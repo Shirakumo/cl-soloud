@@ -22,6 +22,7 @@
    #:audio-source
    #:file
    #:filter
+   #:soloud-error
    #:soloud-backend
    #:soloud-flag
    #:soloud-attenuation
