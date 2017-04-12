@@ -25,7 +25,7 @@
 (defmethod pointer->object (pointer)
   (gethash (cffi:pointer-address pointer) *c-object-table*))
 
-(defmacro with-callback-handling ((instance &optional default) &body body)
+(defmacro with-callback-handling ((instance &optional default (error default)) &body body)
   `(handler-case
        (let ((,instance (pointer->object ,instance)))
          (if ,instance
@@ -33,7 +33,7 @@
              ,default))
      (error (err)
        (format T "~&! Error in callback: ~a~%" err)
-       ,default)))
+       ,error)))
 
 (defun find-cffi-symbol (temp fill)
   (let ((symb (with-output-to-string (o)

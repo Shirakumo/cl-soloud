@@ -192,7 +192,7 @@
 
 (cl-soloud-cffi:set-virtual-audio-source-get-audio (cffi:callback audio-source-get-audio))
 
-(cffi:defcallback audio-source-has-ended :void ((instance :pointer))
+(cffi:defcallback audio-source-has-ended :int ((instance :pointer))
   (with-callback-handling (instance 1)
     (if (has-ended instance) 1 0)))
 
@@ -204,13 +204,15 @@
 
 (cl-soloud-cffi:set-virtual-audio-source-seek (cffi:callback audio-source-seek))
 
-(cffi:defcallback audio-source-rewind :void ((instance :pointer))
-  (with-callback-handling (instance)
+(cffi:defcallback audio-source-rewind :int ((instance :pointer))
+  (with-callback-handling (instance
+                           #.(cffi:foreign-enum-value 'cl-soloud-cffi:soloud-error :not-implemented)
+                           #.(cffi:foreign-enum-value 'cl-soloud-cffi:soloud-error :unknown-error))
     (rewind instance)))
 
 (cl-soloud-cffi:set-virtual-audio-source-rewind (cffi:callback audio-source-rewind))
 
-(cffi:defcallback audio-source-get-info :void ((instance :pointer) (info-key :uint))
+(cffi:defcallback audio-source-get-info :float ((instance :pointer) (info-key :uint))
   (with-callback-handling (instance 0.0)
     (get-info instance info-key)))
 
