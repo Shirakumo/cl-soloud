@@ -13,8 +13,7 @@
   (setf (file source) (cl-mpg123:make-file
                        file
                        :buffer-size NIL
-                       ;; This is not proper.
-                       :accepted-format (list 44100 :stereo :float))))
+                       :accepted-format (list (round (base-samplerate source)) :stereo :float))))
 
 (defmethod get-audio ((source mp3-source) buffer samples)
   (let ((read (cl-mpg123:read-directly (file source) buffer samples)))

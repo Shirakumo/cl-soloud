@@ -520,6 +520,7 @@
    #:seek-to
    #:rewind
    #:get-info
+   #:base-samplerate
    #:virtual-collider
    #:collide
    #:virtual-attenuator

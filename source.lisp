@@ -180,6 +180,12 @@
 (define-internal-source (virtual-source virtual-audio-source) ()
   ())
 
+(defmethod base-samplerate ((virtual-source virtual-source))
+  (cl-soloud-cffi:get-virtual-audio-source-base-samplerate (handle virtual-source)))
+
+(defmethod (setf base-samplerate) (value (virtual-source virtual-source))
+  (cl-soloud-cffi:set-virtual-audio-source-base-samplerate (handle virtual-source) (float value 0.0s0)))
+
 (defgeneric get-audio (audio-source buffer samples))
 (defgeneric has-ended (audio-source))
 (defgeneric seek-to (audio-source time scratch size))
