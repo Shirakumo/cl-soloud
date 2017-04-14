@@ -10,10 +10,13 @@
   ((file :initform NIL :accessor file)))
 
 (defmethod load-file ((source mp3-source) file)
-  (setf (file source) (cl-mpg123:make-file
-                       file
-                       :buffer-size NIL
-                       :accepted-format (list (round (base-samplerate source)) :stereo :float))))
+  (let ((file (cl-mpg123:make-file
+               file
+               :buffer-size NIL
+               :accepted-format (list (round (base-samplerate source)) :stereo :float))))
+    (cl-mpg123:connect file)
+    (cl-mpg123:scan file)
+    (setf (file source) file)))
 
 (defmethod get-audio ((source mp3-source) buffer samples)
   (let ((read (cl-mpg123:read-directly (file source) buffer samples)))
