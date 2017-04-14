@@ -394,6 +394,8 @@
    #:set-virtual-audio-source-3d-attenuator
    #:set-virtual-audio-source-3d-inaudible-behavior
    #:set-virtual-audio-source-filter
+   #:get-virtual-audio-source-base-samplerate
+   #:set-virtual-audio-source-base-samplerate
    #:stop-virtual-audio-source
    ;; VirtualAudioCollider
    #:virtual-audio-collider
@@ -404,7 +406,24 @@
    #:virtual-audio-attenuator
    #:destroy-virtual-audio-attenuator
    #:create-virtual-audio-attenuator
-   #:set-virtual-audio-attenuator-attenuate))
+   #:set-virtual-audio-attenuator-attenuate
+   ;; AudioSourceInstance3dData
+   #:audio-source-instance-3d-data
+   #:get-audio-source-instance-3d-data-position
+   #:get-audio-source-instance-3d-data-velocity
+   #:get-audio-source-instance-3d-data-min-distance
+   #:get-audio-source-instance-3d-data-max-distance
+   #:get-audio-source-instance-3d-data-attenuation-rolloff
+   #:get-audio-source-instance-3d-data-attenuation-model
+   #:get-audio-source-instance-3d-data-doppler-factor
+   #:get-audio-source-instance-3d-data-audio-collider
+   #:get-audio-source-instance-3d-data-audio-attenuator
+   #:get-audio-source-instance-3d-data-collider-data
+   #:get-audio-source-instance-3d-data-doppler-value
+   #:get-audio-source-instance-3d-data-volume
+   #:get-audio-source-instance-3d-data-channel-volume
+   #:get-audio-source-instance-3d-data-flags
+   #:get-audio-source-instance-3d-data-handle))
 
 (defpackage #:cl-soloud
   (:nicknames #:org.shirakumo.fraf.soloud)

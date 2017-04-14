@@ -1628,6 +1628,13 @@
 (defcfun (stop-virtual-audio-source "VirtualAudioSource_stop") :void
   (virtual-audio-source virtual-audio-source))
 
+(defcfun (get-virtual-audio-source-base-samplerate "VirtualAudioSource_getBaseSamplerate") :float
+  (virtual-audio-source virtual-audio-source))
+
+(defcfun (set-virtual-audio-source-base-samplerate "VirtualAudioSource_setBaseSamplerate") :void
+  (virtual-audio-source virtual-audio-source)
+  (samplerate :float))
+
 ;;; VirtualAudioCollider
 (defctype virtual-audio-collider :pointer)
 
@@ -1649,3 +1656,58 @@
 
 (defcfun (set-virtual-audio-attenuator-attenuate "VirtualAudioAttenuator_setAttenuateCallback") :void
   (function :pointer))
+
+;;; AudioSourceInstance3dData
+(defctype audio-source-instance-3d-data :pointer)
+
+(defcfun (get-audio-source-instance-3d-data-position "AudioSourceInstance3dData_get3dPosition") :void
+  (instance audio-source-instance-3d-data)
+  (x :pointer)
+  (y :pointer)
+  (z :pointer))
+
+(defcfun (get-audio-source-instance-3d-data-velocity "AudioSourceInstance3dData_get3dVelocity") :void
+  (instance audio-source-instance-3d-data)
+  (x :pointer)
+  (y :pointer)
+  (z :pointer))
+
+(defcfun (get-audio-source-instance-3d-data-min-distance "AudioSourceInstance3dData_get3dMinDistance") :float
+  (instance audio-source-instance-3d-data))
+
+(defcfun (get-audio-source-instance-3d-data-max-distance "AudioSourceInstance3dData_get3dMaxDistance") :float
+  (instance audio-source-instance-3d-data))
+
+(defcfun (get-audio-source-instance-3d-data-attenuation-rolloff "AudioSourceInstance3dData_get3dAttenuationRolloff") :float
+  (instance audio-source-instance-3d-data))
+
+(defcfun (get-audio-source-instance-3d-data-attenuation-model "AudioSourceInstance3dData_get3dAttenuationModel") :uint
+  (instance audio-source-instance-3d-data))
+
+(defcfun (get-audio-source-instance-3d-data-doppler-factor "AudioSourceInstance3dData_get3dDopplerFactor") :float
+  (instance audio-source-instance-3d-data))
+
+(defcfun (get-audio-source-instance-3d-data-audio-collider "AudioSourceInstance3dData_getAudioCollider") audio-collider
+  (instance audio-source-instance-3d-data))
+
+(defcfun (get-audio-source-instance-3d-data-audio-attenuator "AudioSourceInstance3dData_getAudioAttenuator") audio-attenuator
+  (instance audio-source-instance-3d-data))
+
+(defcfun (get-audio-source-instance-3d-data-collider-data "AudioSourceInstance3dData_getColliderData") :int
+  (instance audio-source-instance-3d-data))
+
+(defcfun (get-audio-source-instance-3d-data-doppler-value "AudioSourceInstance3dData_getDopplerValue") :float
+  (instance audio-source-instance-3d-data))
+
+(defcfun (get-audio-source-instance-3d-data-volume "AudioSourceInstance3dData_get3dVolume") :float
+  (instance audio-source-instance-3d-data))
+
+(defcfun (get-audio-source-instance-3d-data-channel-volume "AudioSourceInstance3dData_getChannelVolume") :float
+  (instance audio-source-instance-3d-data)
+  (channel :uint))
+
+(defcfun (get-audio-source-instance-3d-data-flags "AudioSourceInstance3dData_getFlags") :uint
+  (instance audio-source-instance-3d-data))
+
+(defcfun (get-audio-source-instance-3d-data-handle "AudioSourceInstance3dData_getHandle") :uint
+  (instance audio-source-instance-3d-data))
