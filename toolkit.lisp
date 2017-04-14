@@ -9,15 +9,16 @@
 (defvar *c-object-table* (tg:make-weak-hash-table :test 'eql :weakness :value))
 
 (defclass c-backed-object ()
-  ((handle :initform NIL :accessor handle)))
+  ((handle :initarg :handle :initform NIL :accessor handle)))
 
-(defmethod initialize-instance :after ((c-backed-object c-backed-object) &key)
-  (let ((handle (create-handle c-backed-object)))
-    (when (cffi:null-pointer-p handle)
-      (error "Failed to create ~a handle." c-backed-object))
-    (setf (handle c-backed-object) handle)
-    (tg:finalize handle (destroy-handle c-backed-object handle))
-    (setf (gethash (cffi:pointer-address handle) *c-object-table*) c-backed-object)))
+(defmethod initialize-instance :after ((c-backed-object c-backed-object) &key handle)
+  (unless handle
+    (let ((handle (create-handle c-backed-object)))
+      (when (cffi:null-pointer-p handle)
+        (error "Failed to create ~a handle." c-backed-object))
+      (setf (handle c-backed-object) handle)
+      (tg:finalize handle (destroy-handle c-backed-object handle))
+      (setf (gethash (cffi:pointer-address handle) *c-object-table*) c-backed-object))))
 
 (defmethod pointer->object ((pointer integer))
   (gethash integer *c-object-table*))

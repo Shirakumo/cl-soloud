@@ -23,9 +23,10 @@
    #:file
    #:filter
    #:soloud-error
-   #:soloud-backend
+   #:audio-backend
    #:soloud-flag
-   #:soloud-attenuation
+   #:attenuation-model
+   #:audio-source-flag
    #:create
    #:destroy
    #:init

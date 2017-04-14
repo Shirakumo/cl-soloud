@@ -218,6 +218,66 @@
 
 (cl-soloud-cffi:set-virtual-audio-source-get-info (cffi:callback audio-source-get-info))
 
+(defclass 3d-data (c-backed-object)
+  ())
+
+(defmethod location ((3d-data 3d-data))
+  (cffi:with-foreign-objects ((x :float) (y :float) (z :float))
+    (cl-soloud-cffi:get-audio-source-instance-3d-data-position
+     (handle 3d-data) x y z)
+    (list (cffi:mem-ref x :float)
+          (cffi:mem-ref y :float)
+          (cffi:mem-ref z :float))))
+
+(defmethod velocity ((3d-data 3d-data))
+  (cffi:with-foreign-objects ((x :float) (y :float) (z :float))
+    (cl-soloud-cffi:get-audio-source-instance-3d-data-velocity
+     (handle 3d-data) x y z)
+    (list (cffi:mem-ref x :float)
+          (cffi:mem-ref y :float)
+          (cffi:mem-ref z :float))))
+
+(defmethod min-distance ((3d-data 3d-data))
+  (cl-soloud-cffi:get-audio-source-instance-3d-data-min-distance (handle 3d-data)))
+
+(defmethod max-distance ((3d-data 3d-data))
+  (cl-soloud-cffi:get-audio-source-instance-3d-data-max-distance (handle 3d-data)))
+
+(defmethod attenuation-rolloff ((3d-data 3d-data))
+  (cl-soloud-cffi:get-audio-source-instance-3d-data-attenuation-rolloff (handle 3d-data)))
+
+(defmethod attenuation-model ((3d-data 3d-data))
+  (cl-soloud-cffi:get-audio-source-instance-3d-data-attenuation-model (handle 3d-data)))
+
+(defmethod doppler-factor ((3d-data 3d-data))
+  (cl-soloud-cffi:get-audio-source-instance-3d-data-doppler-factor (handle 3d-data)))
+
+(defmethod audio-collider ((3d-data 3d-data))
+  (let ((pointer (cl-soloud-cffi:get-audio-source-instance-3d-data-audio-collider (handle 3d-data))))
+    (or (pointer->object pointer) pointer)))
+
+(defmethod audio-attenuator ((3d-data 3d-data))
+  (let ((pointer (cl-soloud-cffi:get-audio-source-instance-3d-data-audio-attenuator (handle 3d-data))))
+    (or (pointer->object pointer) pointer)))
+
+(defmethod collider-data ((3d-data 3d-data))
+  (cl-soloud-cffi:get-audio-source-instance-3d-data-collider-data (handle 3d-data)))
+
+(defmethod doppler-value ((3d-data 3d-data))
+  (cl-soloud-cffi:get-audio-source-instance-3d-data-doppler-value (handle 3d-data)))
+
+(defmethod volume ((3d-data 3d-data))
+  (cl-soloud-cffi:get-audio-source-instance-3d-data-volume (handle 3d-data)))
+
+(defmethod channel-volume ((3d-data 3d-data) channel)
+  (cl-soloud-cffi:get-audio-source-instance-3d-data-channel-volume (handle 3d-data) channel))
+
+(defmethod flags ((3d-data 3d-data))
+  (let ((flags (cl-soloud-cffi:get-audio-source-instance-3d-data-flags (handle 3d-data))))
+    (loop for flag in (cffi:foreign-enum-keyword-list 'cl-soloud-cffi:audio-source-flag)
+          when (/= 0 (logand flags (cffi:foreign-enum-value 'cl-soloud-cffi:audio-source-flag flag)))
+          collect flag)))
+
 (defclass virtual-collider (collider)
   ())
 
@@ -231,7 +291,7 @@
 
 (cffi:defcallback audio-collider-collide :void ((instance :pointer) (soloud :pointer) (3d-data :pointer) (user-data :int))
   (with-callback-handling (instance)
-    (collide instance (pointer->object soloud) 3d-data user-data)))
+    (collide instance (pointer->object soloud) (make-instance '3d-data :handle 3d-data) user-data)))
 
 (cl-soloud-cffi:set-virtual-audio-collider-collide (cffi:callback audio-collider-collide))
 
