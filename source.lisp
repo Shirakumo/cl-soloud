@@ -6,6 +6,18 @@
 
 (in-package #:org.shirakumo.fraf.soloud)
 
+(defun decode-audio-source-flags (flags)
+  (loop for flag in (cffi:foreign-enum-keyword-list 'cl-soloud-cffi:audio-source-flag)
+        when (/= 0 (logand flags (cffi:foreign-enum-value 'cl-soloud-cffi:audio-source-flag flag)))
+        collect flag))
+
+(defun encode-audio-source-flags (flags)
+  (etypecase flags
+    (integer flags)
+    (list (let ((int 0))
+            (dolist (flag flags int)
+              (setf int (logior int (cffi:foreign-enum-value 'cl-soloud-cffi:audio-source-flag flag))))))))
+
 (defclass source (c-backed-object)
   ((filter-map :initform (make-hash-table :test 'eql) :accessor filter-map)))
 
@@ -58,7 +70,7 @@
            ,(fun 'set-_-volume 'value)
            value)
          
-         (defmethod (setf looping) (value (,name ,class))
+         (defmethod (setf looping-p) (value (,name ,class))
            ,(fun 'set-_-looping '(if value 1 0))
            value)
          
@@ -202,6 +214,31 @@
 (defmethod (setf channels) (value (virtual-source virtual-source))
   (cl-soloud-cffi:set-virtual-audio-source-channels (handle virtual-source) value))
 
+(defmethod flags ((virtual-source virtual-source))
+  (decode-audio-source-flags
+   (cl-soloud-cffi:get-virtual-audio-source-flags (handle virtual-source))))
+
+(defmethod (setf flags) (value (virtual-source virtual-source))
+  (cl-soloud-cffi:set-virtual-audio-source-flags
+   (handle virtual-source) (encode-audio-source-flags value)))
+
+(defmacro define-flag-accessor (name flag)
+  `(progn
+     (defmethod ,name ((virtual-source virtual-source))
+       (< 0 (logand (flags virtual-source) (cffi:foreign-enum-value 'cl-soloud-cffi:audio-source-flag ,flag))))
+
+     (defmethod (setf ,name) (value (virtual-source virtual-source))
+       (let ((value (cffi:foreign-enum-value 'cl-soloud-cffi:audio-source-flag ,flag)))
+         (setf (flags audio-source) (logior (flags audio-source) (if value value (lognot value))))))))
+
+(define-flag-accessor looping-p :should-loop)
+(define-flag-accessor single-instance-p :single-instance)
+(define-flag-accessor 3d-processed-p :process-3d)
+(define-flag-accessor listener-relative-p :listener-relative)
+(define-flag-accessor distance-delayed-p :distance-delay)
+(define-flag-accessor inaudible-kill-p :inaudible-kill)
+(define-flag-accessor inaudible-tick-p :inaudible-tick)
+
 (defgeneric get-audio (audio-source buffer samples))
 (defgeneric has-ended (audio-source))
 (defgeneric seek-to (audio-source time scratch size))
@@ -295,10 +332,8 @@
   (cl-soloud-cffi:get-audio-source-instance-3d-data-channel-volume (handle 3d-data) channel))
 
 (defmethod flags ((3d-data 3d-data))
-  (let ((flags (cl-soloud-cffi:get-audio-source-instance-3d-data-flags (handle 3d-data))))
-    (loop for flag in (cffi:foreign-enum-keyword-list 'cl-soloud-cffi:audio-source-flag)
-          when (/= 0 (logand flags (cffi:foreign-enum-value 'cl-soloud-cffi:audio-source-flag flag)))
-          collect flag)))
+  (decode-audio-source-flags
+   (cl-soloud-cffi:get-audio-source-instance-3d-data-flags (handle 3d-data))))
 
 (defclass virtual-collider (collider)
   ())

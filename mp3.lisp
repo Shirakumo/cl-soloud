@@ -22,12 +22,20 @@
 (defmethod get-audio ((source mp3-source) dst samples)
   (let* ((bytes (* samples 4 2))
          (src (cl-mpg123:buffer (file source)))
-         (read (cl-mpg123:read-directly (file source) src bytes)))
+         (read (cl-mpg123:read-directly (file source) src bytes))
+         (read-samples (/ read 4 2)))
     ;; SoLoud wants L{n}R{n}, MPG123 gives (LR){n}. Need to re-encode.
-    (loop for i from 0 below samples
+    (loop for i from 0 below read-samples
           for k = (* i 2)
           do (setf (cffi:mem-aref dst :float i)             (cffi:mem-aref src :float k))
-             (setf (cffi:mem-aref dst :float (+ samples i)) (cffi:mem-aref src :float (1+ k))))))
+             (setf (cffi:mem-aref dst :float (+ samples i)) (cffi:mem-aref src :float (1+ k))))
+    (when (< read bytes)
+      (cond ((looping-p source)
+             (rewind source)
+             (get-audio source (cffi:inc-pointer dst read) (/ (- bytes read) 4 2)))
+            (T
+             (loop for i from read-samples below samples
+                   do (setf (cffi:mem-aref dst :float i) 0.0s0)))))))
 
 (defmethod has-ended ((source mp3-source))
   (<= (cl-mpg123:sample-count (file source))

@@ -1650,7 +1650,14 @@
 
 (defcfun (set-virtual-audio-source-channels "VirtualAudioSource_setChannels") :void
   (virtual-audio-source virtual-audio-source)
-  (samplerate :int))
+  (channels :int))
+
+(defcfun (get-virtual-audio-source-flags "VirtualAudioSource_getFlags") :uint
+  (virtual-audio-source virtual-audio-source))
+
+(defcfun (set-virtual-audio-source-flags "VirtualAudioSource_setFlags") :void
+  (virtual-audio-source virtual-audio-source)
+  (flags :uint))
 
 ;;; VirtualAudioCollider
 (defctype virtual-audio-collider :pointer)

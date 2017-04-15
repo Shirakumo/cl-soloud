@@ -399,6 +399,8 @@
    #:set-virtual-audio-source-base-samplerate
    #:get-virtual-audio-source-channels
    #:set-virtual-audio-source-channels
+   #:get-virtual-audio-source-flags
+   #:set-virtual-audio-source-flags
    #:stop-virtual-audio-source
    ;; VirtualAudioCollider
    #:virtual-audio-collider
@@ -466,10 +468,10 @@
    #:pan
    #:set-absolute-pan
    #:relative-speed
-   #:paused
+   #:paused-p
    #:stop
-   #:looping
-   #:protected
+   #:looping-p
+   #:protected-p
    #:max-active-playback-count
    #:active-playback-count
    #:playback-count
@@ -497,7 +499,7 @@
    #:collider
    #:attenuator
    #:volume
-   #:looping
+   #:looping-p
    #:min-max-distance
    #:attenuation
    #:doppler-factor
@@ -526,6 +528,15 @@
    #:rewind
    #:get-info
    #:base-samplerate
+   #:channels
+   #:flags
+   #:looping-p
+   #:single-instance-p
+   #:3d-processed-p
+   #:listener-relative-p
+   #:distance-delayed-p
+   #:inaudible-kill-p
+   #:inaudible-tick-p
    #:virtual-collider
    #:collide
    #:virtual-attenuator

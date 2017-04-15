@@ -14,11 +14,13 @@
    (soloud :initarg :soloud :initform NIL :accessor soloud)
    (source :initarg :source :initform NIL :accessor source)))
 
-(defun compute-flags (flags)
-  (let ((int 0))
-    (dolist (flag flags int)
-      (setf int (logior int (cffi:foreign-enum-value
-                             'cl-soloud-cffi:soloud-flag flag))))))
+(defun compute-soloud-flags (flags)
+  (etypecase flags
+    (integer flags)
+    (list (let ((int 0))
+            (dolist (flag flags int)
+              (setf int (logior int (cffi:foreign-enum-value
+                                     'cl-soloud-cffi:soloud-flag flag))))))))
 
 (defmethod create-handle ((soloud soloud))
   (cl-soloud-cffi:create))
@@ -31,7 +33,7 @@
 (defmethod initialize-instance :after ((soloud soloud) &key (flags '(:clip-roundoff)) (backend :auto) sample-rate buffer-size channels
                                                             (max-active-playback-count 16))
   ;; FIXME: detect init fail
-  (cl-soloud-cffi:init* (handle soloud) (compute-flags flags) backend (or sample-rate 0) (or buffer-size 0) (or channels 2))
+  (cl-soloud-cffi:init* (handle soloud) (compute-soloud-flags flags) backend (or sample-rate 0) (or buffer-size 0) (or channels 2))
   (cl-soloud-cffi:set-max-active-voice-count (handle soloud) max-active-playback-count))
 
 (defmethod backend ((soloud soloud))
@@ -133,12 +135,12 @@
       (cl-soloud-cffi:fade-relative-play-speed (handle (soloud playback)) (handle playback) relative-speed fade)
       (cl-soloud-cffi:set-relative-play-speed (handle (soloud playback)) (handle playback) relative-speed)))
 
-(defmethod paused ((playback playback))
+(defmethod paused-p ((playback playback))
   (if (= 0 (cl-soloud-cffi:get-pause (handle (soloud playback)) (handle playback)))
       NIL
       T))
 
-(defmethod (setf paused) (value (playback playback))
+(defmethod (setf paused-p) (value (playback playback))
   (etypecase value
     ((float 0.0)
      (cl-soloud-cffi:schedule-pause (handle (soloud playback)) (handle playback) value))
@@ -153,21 +155,21 @@
 (defmethod stop ((soloud soloud))
   (cl-soloud-cffi:stop-all (handle soloud)))
 
-(defmethod looping ((playback playback))
+(defmethod looping-p ((playback playback))
   (if (= 0 (cl-soloud-cffi:get-looping (handle (soloud playback)) (handle playback)))
       NIL
       T))
 
-(defmethod (setf looping) (value (playback playback))
+(defmethod (setf looping-p) (value (playback playback))
   (cl-soloud-cffi:set-looping (handle (soloud playback)) (handle playback)
                             (if value 1 0)))
 
-(defmethod protected ((playback playback))
+(defmethod protected-p ((playback playback))
   (if (= 0 (cl-soloud-cffi:get-protect-voice (handle (soloud playback)) (handle playback)))
       NIL
       T))
 
-(defmethod (setf protected) (value (playback playback))
+(defmethod (setf protected-p) (value (playback playback))
   (cl-soloud-cffi:set-protect-voice (handle (soloud playback)) (handle playback)
                             (if value 1 0)))
 
