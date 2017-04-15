@@ -196,6 +196,12 @@
 (defmethod (setf base-samplerate) (value (virtual-source virtual-source))
   (cl-soloud-cffi:set-virtual-audio-source-base-samplerate (handle virtual-source) (float value 0.0s0)))
 
+(defmethod channels ((virtual-source virtual-source))
+  (cl-soloud-cffi:get-virtual-audio-source-channels (handle virtual-source)))
+
+(defmethod (setf channels) (value (virtual-source virtual-source))
+  (cl-soloud-cffi:set-virtual-audio-source-channels (handle virtual-source) value))
+
 (defgeneric get-audio (audio-source buffer samples))
 (defgeneric has-ended (audio-source))
 (defgeneric seek-to (audio-source time scratch size))

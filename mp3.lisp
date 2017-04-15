@@ -16,18 +16,18 @@
                :accepted-format (list (round (base-samplerate source)) :stereo :float))))
     (cl-mpg123:connect file)
     (cl-mpg123:scan file)
+    (setf (channels source) 2)
     (setf (file source) file)))
 
 (defmethod get-audio ((source mp3-source) dst samples)
-  (with-simple-restart (continue "Continue")
-    (let* ((bytes (* samples 4 2))
-           (src (cl-mpg123:buffer (file source)))
-           (read (cl-mpg123:read-directly (file source) src bytes)))
-      ;; SoLoud wants L{n}R{n}, MPG123 gives (LR){n}. Need to re-encode.
-      (loop for i from 0 below samples
-            for k = (* i 2)
-            do (setf (cffi:mem-aref dst :float i)             (cffi:mem-aref src :float k))
-               (setf (cffi:mem-aref dst :float (+ i samples)) (cffi:mem-aref src :float (1+ k)))))))
+  (let* ((bytes (* samples 4 2))
+         (src (cl-mpg123:buffer (file source)))
+         (read (cl-mpg123:read-directly (file source) src bytes)))
+    ;; SoLoud wants L{n}R{n}, MPG123 gives (LR){n}. Need to re-encode.
+    (loop for i from 0 below samples
+          for k = (* i 2)
+          do (setf (cffi:mem-aref dst :float i)             (cffi:mem-aref src :float k))
+             (setf (cffi:mem-aref dst :float (+ samples i)) (cffi:mem-aref src :float (1+ k))))))
 
 (defmethod has-ended ((source mp3-source))
   (<= (cl-mpg123:sample-count (file source))
@@ -43,3 +43,4 @@
 
 (defmethod get-info ((source mp3-source) info-key)
   0.0)
+
