@@ -20,10 +20,12 @@
                (:file "source")
                (:file "soloud")
                (:file "bus")
+               (:file "mp3")
                (:file "documentation"))
   :depends-on (:alexandria
                :cffi
                :trivial-features
                :trivial-garbage
                :trivial-indent
-               :documentation-utils))
+               :documentation-utils
+               :cl-mpg123))

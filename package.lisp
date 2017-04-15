@@ -448,6 +448,9 @@
    #:virtual-filter
    #:filter
    #:filter-channel)
+  ;; mp3.lisp
+  (:export
+   #:mp3-source)
   ;; soloud.lisp
   (:export
    #:soloud
