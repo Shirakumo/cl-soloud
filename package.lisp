@@ -397,6 +397,8 @@
    #:set-virtual-audio-source-filter
    #:get-virtual-audio-source-base-samplerate
    #:set-virtual-audio-source-base-samplerate
+   #:get-virtual-audio-source-channels
+   #:set-virtual-audio-source-channels
    #:stop-virtual-audio-source
    ;; VirtualAudioCollider
    #:virtual-audio-collider
