@@ -18,6 +18,14 @@
       (setf (filter source id) filter)))
   filter)
 
+(defmethod load-file :around ((source source) file)
+  (call-next-method)
+  source)
+
+(defmethod load-mem :around ((source source) pointer length &key)
+  (call-next-method)
+  source)
+
 (defmethod withdraw ((filter filter) (source source))
   (loop for k being the hash-keys of (filter-map source)
         for v being the hash-values of (filter-map source)
@@ -138,7 +146,8 @@
 
 (defmethod load-text ((source speech-source) text)
   (cl-soloud-cffi:set-speech-text
-   (handle source) text))
+   (handle source) text)
+  source)
 
 (define-internal-source (sfxr-source sfxr) ()
   ())
@@ -149,7 +158,8 @@
 
 (defmethod load-preset ((source sfxr-source) (preset symbol))
   (cl-soloud-cffi:load-sfxr-preset
-   (handle source) preset (random (ash 1 (* 8 (cffi:foreign-type-size :int))))))
+   (handle source) preset (random (ash 1 (* 8 (cffi:foreign-type-size :int)))))
+  source)
 
 (defmethod load-mem ((source sfxr-source) pointer length &key copy take-ownership)
   (cl-soloud-cffi:load-sfxr-params-mem*
