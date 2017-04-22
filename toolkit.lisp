@@ -17,7 +17,7 @@
       (when (cffi:null-pointer-p handle)
         (error "Failed to create ~a handle." c-backed-object))
       (setf (handle c-backed-object) handle)
-      (tg:finalize handle (destroy-handle c-backed-object handle))
+      (tg:finalize c-backed-object (destroy-handle c-backed-object handle))
       (setf (gethash (cffi:pointer-address handle) *c-object-table*) c-backed-object))))
 
 (defmethod pointer->object ((pointer integer))
