@@ -26,6 +26,14 @@
 (defmethod pointer->object (pointer)
   (gethash (cffi:pointer-address pointer) *c-object-table*))
 
+(defmethod free ((object c-backed-object))
+  (let ((handle (handle object)))
+    (when handle
+      (setf (handle object) NIL)
+      (remhash (cffi:pointer-address handle) *c-object-table*)
+      (tg:cancel-finalization object)
+      (funcall (destroy-handle object handle)))))
+
 (defmacro with-callback-handling ((instance &optional default (error default)) &body body)
   `(handler-case
        (let ((,instance (pointer->object ,instance)))

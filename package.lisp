@@ -545,4 +545,5 @@
   (:export
    #:c-backed-object
    #:handle
-   #:pointer->object))
+   #:pointer->object
+   #:free))
