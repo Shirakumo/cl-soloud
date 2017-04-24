@@ -119,12 +119,12 @@
          (defmethod (setf filter) ((filter filter) (,name ,class) id)
            (check-type id (integer 0 #.cl-soloud-cffi:*max-filters*))
            ,(fun 'set-_-filter 'id '(handle filter))
-           value)
+           filter)
 
          (defmethod (setf filter) ((null null) (,name ,class) id)
            (check-type id (integer 0 #.cl-soloud-cffi:*max-filters*))
            ,(fun 'set-_-filter 'id '(cffi:null-pointer))
-           value)
+           NIL)
          
          (defmethod stop ((,name ,class))
            ,(fun 'stop-_))))))
@@ -225,11 +225,12 @@
 (defmacro define-flag-accessor (name flag)
   `(progn
      (defmethod ,name ((virtual-source virtual-source))
-       (< 0 (logand (flags virtual-source) (cffi:foreign-enum-value 'cl-soloud-cffi:audio-source-flag ,flag))))
+       (find ,flag (flags virtual-source)))
 
      (defmethod (setf ,name) (active (virtual-source virtual-source))
-       (let ((value (cffi:foreign-enum-value 'cl-soloud-cffi:audio-source-flag ,flag)))
-         (setf (flags virtual-source) (logior (flags virtual-source) (if active value (lognot value))))))))
+       (if active
+           (pushnew ,flag (flags virtual-source))
+           (setf (flags virtual-source) (remove ,flag (flags virtual-source)))))))
 
 (define-flag-accessor looping-p :should-loop)
 (define-flag-accessor single-instance-p :single-instance)
