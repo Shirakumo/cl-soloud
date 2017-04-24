@@ -227,9 +227,9 @@
      (defmethod ,name ((virtual-source virtual-source))
        (< 0 (logand (flags virtual-source) (cffi:foreign-enum-value 'cl-soloud-cffi:audio-source-flag ,flag))))
 
-     (defmethod (setf ,name) (value (virtual-source virtual-source))
+     (defmethod (setf ,name) (active (virtual-source virtual-source))
        (let ((value (cffi:foreign-enum-value 'cl-soloud-cffi:audio-source-flag ,flag)))
-         (setf (flags audio-source) (logior (flags audio-source) (if value value (lognot value))))))))
+         (setf (flags virtual-source) (logior (flags virtual-source) (if active value (lognot value))))))))
 
 (define-flag-accessor looping-p :should-loop)
 (define-flag-accessor single-instance-p :single-instance)
