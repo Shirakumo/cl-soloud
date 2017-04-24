@@ -30,16 +30,18 @@
           do (setf (cffi:mem-aref dst :float i)             (cffi:mem-aref src :float k))
              (setf (cffi:mem-aref dst :float (+ samples i)) (cffi:mem-aref src :float (1+ k))))
     (when (< read bytes)
-      (cond ((looping-p source)
-             (rewind source)
-             (get-audio source (cffi:inc-pointer dst read) (/ (- bytes read) 4 2)))
-            (T
-             (loop for i from read-samples below samples
-                   do (setf (cffi:mem-aref dst :float i) 0.0s0)))))))
+      (handler-bind ((error #'invoke-debugger))
+        (cond ((looping-p source)
+               (rewind source)
+               (get-audio source (cffi:inc-pointer dst read) (/ (- bytes read) 4 2)))
+              (T
+               (loop for i from read-samples below samples
+                     do (setf (cffi:mem-aref dst :float i) 0.0s0))))))))
 
 (defmethod has-ended ((source mp3-source))
-  (<= (cl-mpg123:sample-count (file source))
-      (cl-mpg123:sample-position (file source))))
+  (unless (looping-p source)
+    (<= (cl-mpg123:sample-count (file source))
+        (cl-mpg123:sample-position (file source)))))
 
 (defmethod seek-to ((source mp3-source) time scratch size)
   ;; I don't actually know what these arguments are.
