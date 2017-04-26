@@ -49,7 +49,9 @@
 (defclass attenuator (c-backed-object)
   ())
 
-(defgeneric distance-delayed-p)
+(defgeneric distance-delayed-p (source))
+(defgeneric 3d-processed-p (source))
+(defgeneric listener-relative-p (source))
 
 (defmacro define-internal-source (class direct-superclasses direct-slots &rest options)
   (destructuring-bind (class &optional (name class))

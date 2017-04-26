@@ -650,7 +650,7 @@ are assumed to be (0 0 0) in calculations.
 
 See SOURCE")
 
-  (function distance-delay
+  (function distance-delayed-p
     "Accessor to whether the sound's playback will be delayed by its distance.
 
 Since speed of sound is way slower than speed of light, in
@@ -688,7 +688,7 @@ See ATTENUATOR")
 See FILTER
 See SOURCE")
 
-  (type wave-source
+  (type wav-source
     "The SoLoud::Wav class represents a wave sound effect.
 
 The source files may be in 8 or 16 bit raw RIFF WAV files,

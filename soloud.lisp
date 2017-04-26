@@ -44,7 +44,7 @@
    (cl-soloud-cffi:get-backend-sample-rate (handle soloud))
    (cl-soloud-cffi:get-backend-buffer-size (handle soloud))))
 
-(defgeneric cahnnel-location (soloud channel))
+(defgeneric channel-location (soloud channel))
 
 (defmethod (setf channel-location) (location (soloud soloud) channel)
   (destructuring-bind (x y z) location
