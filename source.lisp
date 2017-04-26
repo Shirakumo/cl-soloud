@@ -49,6 +49,8 @@
 (defclass attenuator (c-backed-object)
   ())
 
+(defgeneric distance-delayed-p)
+
 (defmacro define-internal-source (class direct-superclasses direct-slots &rest options)
   (destructuring-bind (class &optional (name class))
       (alexandria:ensure-list class)
@@ -88,15 +90,15 @@
            ,(fun 'set-_-3d-doppler-factor 'value)
            value)
          
-         (defmethod (setf 3d-processing) (value (,name ,class))
+         (defmethod (setf 3d-processed-p) (value (,name ,class))
            ,(fun 'set-_-3d-processing '(if value 1 0))
            value)
          
-         (defmethod (setf listener-relative) (value (,name ,class))
+         (defmethod (setf listener-relative-p) (value (,name ,class))
            ,(fun 'set-_-3d-listener-relative '(if value 1 0))
            value)
          
-         (defmethod (setf distance-delay) (value (,name ,class))
+         (defmethod (setf distance-delayed-p) (value (,name ,class))
            ,(fun 'set-_-3d-distance-delay '(if value 1 0))
            value)
          
@@ -113,7 +115,7 @@
          
          (defmethod (setf inaudible-behavior) (value (,name ,class))
            (destructuring-bind (must-tick kill) value
-             ,(fun 'set-_-3d-inaudible-behavior '(if must-tick 1 0) '(if kill 1 0)))
+             ,(fun 'set-_-inaudible-behavior '(if must-tick 1 0) '(if kill 1 0)))
            value)
          
          (defmethod (setf filter) ((filter filter) (,name ,class) id)
@@ -232,13 +234,13 @@
            (pushnew ,flag (flags virtual-source))
            (setf (flags virtual-source) (remove ,flag (flags virtual-source)))))))
 
-(define-flag-accessor looping-p :should-loop)
 (define-flag-accessor single-instance-p :single-instance)
-(define-flag-accessor 3d-processed-p :process-3d)
-(define-flag-accessor listener-relative-p :listener-relative)
-(define-flag-accessor distance-delayed-p :distance-delay)
 (define-flag-accessor inaudible-kill-p :inaudible-kill)
 (define-flag-accessor inaudible-tick-p :inaudible-tick)
+
+(defmethod inaudible-behavior ((source virtual-source))
+  (list (inaudible-tick-p source)
+        (inaudible-kill-p source)))
 
 (defgeneric get-audio (audio-source buffer samples))
 (defgeneric has-ended (audio-source))
@@ -297,26 +299,22 @@
           (cffi:mem-ref y :float)
           (cffi:mem-ref z :float))))
 
-(defmethod min-distance ((3d-data 3d-data))
-  (cl-soloud-cffi:get-audio-source-instance-3d-data-min-distance (handle 3d-data)))
+(defmethod min-max-distance ((3d-data 3d-data))
+  (list (cl-soloud-cffi:get-audio-source-instance-3d-data-min-distance (handle 3d-data))
+        (cl-soloud-cffi:get-audio-source-instance-3d-data-max-distance (handle 3d-data))))
 
-(defmethod max-distance ((3d-data 3d-data))
-  (cl-soloud-cffi:get-audio-source-instance-3d-data-max-distance (handle 3d-data)))
-
-(defmethod attenuation-rolloff ((3d-data 3d-data))
-  (cl-soloud-cffi:get-audio-source-instance-3d-data-attenuation-rolloff (handle 3d-data)))
-
-(defmethod attenuation-model ((3d-data 3d-data))
-  (cl-soloud-cffi:get-audio-source-instance-3d-data-attenuation-model (handle 3d-data)))
+(defmethod attenuation ((3d-data 3d-data))
+  (list (cl-soloud-cffi:get-audio-source-instance-3d-data-attenuation-model (handle 3d-data))
+        (cl-soloud-cffi:get-audio-source-instance-3d-data-attenuation-rolloff (handle 3d-data))))
 
 (defmethod doppler-factor ((3d-data 3d-data))
   (cl-soloud-cffi:get-audio-source-instance-3d-data-doppler-factor (handle 3d-data)))
 
-(defmethod audio-collider ((3d-data 3d-data))
+(defmethod collider ((3d-data 3d-data))
   (let ((pointer (cl-soloud-cffi:get-audio-source-instance-3d-data-audio-collider (handle 3d-data))))
     (or (pointer->object pointer) pointer)))
 
-(defmethod audio-attenuator ((3d-data 3d-data))
+(defmethod attenuator ((3d-data 3d-data))
   (let ((pointer (cl-soloud-cffi:get-audio-source-instance-3d-data-audio-attenuator (handle 3d-data))))
     (or (pointer->object pointer) pointer)))
 

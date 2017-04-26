@@ -792,7 +792,7 @@
   (bus bus)
   (audio-attenuator audio-attenuator))
 
-(defcfun (set-bus-3d-inaudible-behavior "Bus_setInaudibleBehavior") :void
+(defcfun (set-bus-inaudible-behavior "Bus_setInaudibleBehavior") :void
   (bus bus)
   (must-tick :int)
   (kill :int))
@@ -901,7 +901,7 @@
   (speech speech)
   (audio-attenuator audio-attenuator))
 
-(defcfun (set-speech-3d-inaudible-behavior "Speech_setInaudibleBehavior") :void
+(defcfun (set-speech-inaudible-behavior "Speech_setInaudibleBehavior") :void
   (speech speech)
   (must-tick :int)
   (kill :int))
@@ -992,7 +992,7 @@
   (wav wav)
   (audio-attenuator audio-attenuator))
 
-(defcfun (set-wav-3d-inaudible-behavior "Wav_setInaudibleBehavior") :void
+(defcfun (set-wav-inaudible-behavior "Wav_setInaudibleBehavior") :void
   (wav wav)
   (must-tick :int)
   (kill :int))
@@ -1091,7 +1091,7 @@
   (wav-stream wav-stream)
   (audio-attenuator audio-attenuator))
 
-(defcfun (set-wav-stream-3d-inaudible-behavior "WavStream_setInaudibleBehavior") :void
+(defcfun (set-wav-stream-inaudible-behavior "WavStream_setInaudibleBehavior") :void
   (wav-stream wav-stream)
   (must-tick :int)
   (kill :int))
@@ -1208,7 +1208,7 @@
   (sfxr sfxr)
   (audio-attenuator audio-attenuator))
 
-(defcfun (set-sfxr-3d-inaudible-behavior "Sfxr_setInaudibleBehavior") :void
+(defcfun (set-sfxr-inaudible-behavior "Sfxr_setInaudibleBehavior") :void
   (sfxr sfxr)
   (must-tick :int)
   (kill :int))
@@ -1329,7 +1329,7 @@
   (openmpt openmpt)
   (audio-attenuator audio-attenuator))
 
-(defcfun (set-openmpt-3d-inaudible-behavior "Openmpt_setInaudibleBehavior") :void
+(defcfun (set-openmpt-inaudible-behavior "Openmpt_setInaudibleBehavior") :void
   (openmpt openmpt)
   (must-tick :int)
   (kill :int))
@@ -1432,7 +1432,7 @@
   (monotone monotone)
   (audio-attenuator audio-attenuator))
 
-(defcfun (set-monotone-3d-inaudible-behavior "Monotone_setInaudibleBehavior") :void
+(defcfun (set-monotone-inaudible-behavior "Monotone_setInaudibleBehavior") :void
   (monotone monotone)
   (must-tick :int)
   (kill :int))
@@ -1528,7 +1528,7 @@
   (ted-sid ted-sid)
   (audio-attenuator audio-attenuator))
 
-(defcfun (set-ted-sid-3d-inaudible-behavior "TedSid_setInaudibleBehavior") :void
+(defcfun (set-ted-sid-inaudible-behavior "TedSid_setInaudibleBehavior") :void
   (ted-sid ted-sid)
   (must-tick :int)
   (kill :int))
@@ -1625,7 +1625,7 @@
   (virtual-audio-source virtual-audio-source)
   (audio-attenuator audio-attenuator))
 
-(defcfun (set-virtual-audio-source-3d-inaudible-behavior "VirtualAudioSource_setInaudibleBehavior") :void
+(defcfun (set-virtual-audio-source-inaudible-behavior "VirtualAudioSource_setInaudibleBehavior") :void
   (virtual-audio-source virtual-audio-source)
   (must-tick :int)
   (kill :int))

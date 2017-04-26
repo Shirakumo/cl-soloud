@@ -107,12 +107,18 @@
 (defmethod destroy-handle ((virtual-filter virtual-filter) handle)
   (lambda () (cl-soloud-cffi:destroy-virtual-filter handle)))
 
-(defgeneric filter (filter samples channels samplerate time))
+(defgeneric filter (filter buffer samples channels samplerate time))
+
+(defmethod filter ((filter virtual-filter) buffer samples channels samplerate time)
+  (loop for channel from 0 below channels
+        for buf = buffer then (cffi:inc-pointer buf (* samples (cffi:foreign-type-size :float)))
+        do (filter-channel filter buf channel samples channels samplerate time)))
+
 (defgeneric filter-channel (filter buffer channel samples channels samplerate time))
 
-(cffi:defcallback filter-filter :void ((instance :pointer) (samples :uint) (channels :uint) (samplerate :float) (time :float))
+(cffi:defcallback filter-filter :void ((instance :pointer) (buffer :pointer) (samples :uint) (channels :uint) (samplerate :float) (time :float))
   (with-callback-handling (instance)
-    (filter instance samples channels samplerate time)))
+    (filter instance buffer samples channels samplerate time)))
 
 (cl-soloud-cffi:set-virtual-filter-filter (cffi:callback filter-filter))
 

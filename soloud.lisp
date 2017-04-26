@@ -44,6 +44,8 @@
    (cl-soloud-cffi:get-backend-sample-rate (handle soloud))
    (cl-soloud-cffi:get-backend-buffer-size (handle soloud))))
 
+(defgeneric cahnnel-location (soloud channel))
+
 (defmethod (setf channel-location) (location (soloud soloud) channel)
   (destructuring-bind (x y z) location
     (check-type channel (integer 0))
@@ -228,10 +230,14 @@
     (cl-soloud-cffi:set-3d-listener-position (handle soloud) x y z))
   (cl-soloud-cffi:update-3d-audio (handle soloud)))
 
+(defgeneric direction (object))
+
 (defmethod (setf direction) (value (soloud soloud))
   (destructuring-bind (x y z) value
     (cl-soloud-cffi:set-3d-listener-at (handle soloud) x y z))
   (cl-soloud-cffi:update-3d-audio (handle soloud)))
+
+(defgeneric up (object))
 
 (defmethod (setf up) (value (soloud soloud))
   (destructuring-bind (x y z) value

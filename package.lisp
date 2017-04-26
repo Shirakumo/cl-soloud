@@ -169,7 +169,7 @@
    #:set-bus-3d-collider
    #:set-bus-3d-collider*
    #:set-bus-3d-attenuator
-   #:set-bus-3d-inaudible-behavior
+   #:set-bus-inaudible-behavior
    #:stop-bus
    ;; Echo Filter
    #:echo-filter
@@ -203,7 +203,7 @@
    #:set-speech-3d-collider
    #:set-speech-3d-collider*
    #:set-speech-3d-attenuator
-   #:set-speech-3d-inaudible-behavior
+   #:set-speech-inaudible-behavior
    #:set-speech-filter
    #:stop-speech
    ;; Wav
@@ -226,7 +226,7 @@
    #:set-wav-3d-collider
    #:set-wav-3d-collider*
    #:set-wav-3d-attenuator
-   #:set-wav-3d-inaudible-behavior
+   #:set-wav-inaudible-behavior
    #:set-wav-filter
    #:stop-wav
    ;; Wav Stream
@@ -251,7 +251,7 @@
    #:set-wav-stream-3d-collider
    #:set-wav-stream-3d-collider*
    #:set-wav-stream-3d-attenuator
-   #:set-wav-stream-3d-inaudible-behavior
+   #:set-wav-stream-inaudible-behavior
    #:set-wav-stream-filter
    #:stop-wav-stream
    ;; Prg
@@ -281,7 +281,7 @@
    #:set-sfxr-3d-collider
    #:set-sfxr-3d-collider*
    #:set-sfxr-3d-attenuator
-   #:set-sfxr-3d-inaudible-behavior
+   #:set-sfxr-inaudible-behavior
    #:set-sfxr-filter
    #:stop-sfxr
    ;; Flanger Filter
@@ -315,7 +315,7 @@
    #:set-openmpt-3d-collider
    #:set-openmpt-3d-collider*
    #:set-openmpt-3d-attenuator
-   #:set-openmpt-3d-inaudible-behavior
+   #:set-openmpt-inaudible-behavior
    #:set-openmpt-filter
    #:stop-openmpt
    ;; Monotone
@@ -340,7 +340,7 @@
    #:set-monotone-3d-collider
    #:set-monotone-3d-collider*
    #:set-monotone-3d-attenuator
-   #:set-monotone-3d-inaudible-behavior
+   #:set-monotone-inaudible-behavior
    #:set-monotone-filter
    #:stop-monotone
    ;; TedSid
@@ -364,7 +364,7 @@
    #:set-ted-sid-3d-collider
    #:set-ted-sid-3d-collider*
    #:set-ted-sid-3d-attenuator
-   #:set-ted-sid-3d-inaudible-behavior
+   #:set-ted-sid-inaudible-behavior
    #:set-ted-sid-filter
    #:stop-ted-sid
    ;; VirtualFilter
@@ -393,7 +393,7 @@
    #:set-virtual-audio-source-3d-collider
    #:set-virtual-audio-source-3d-collider*
    #:set-virtual-audio-source-3d-attenuator
-   #:set-virtual-audio-source-3d-inaudible-behavior
+   #:set-virtual-audio-source-inaudible-behavior
    #:set-virtual-audio-source-filter
    #:get-virtual-audio-source-base-samplerate
    #:set-virtual-audio-source-base-samplerate

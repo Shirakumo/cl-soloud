@@ -26,6 +26,9 @@
 (defmethod pointer->object (pointer)
   (gethash (cffi:pointer-address pointer) *c-object-table*))
 
+(defmethod pointer->object ((object c-backed-object))
+  object)
+
 (defmethod free ((object c-backed-object))
   (let ((handle (handle object)))
     (when handle
